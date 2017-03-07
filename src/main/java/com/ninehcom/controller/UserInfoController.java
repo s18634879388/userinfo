@@ -5,7 +5,6 @@ import com.ninehcom.service.UserInfoService;
 import com.ninehcom.util.RequestUtils;
 import com.ninehcom.util.Result;
 import com.wordnik.swagger.annotations.*;
-import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -214,6 +213,16 @@ public class UserInfoController {
     public Result tokenlogin(
             @RequestHeader("token") String token) throws Exception {
         return userService.tokenlogin(token);
+    }
+    /**
+     * 登出
+     */
+    @ApiOperation(value = "登出", notes = "登出", position = 14)
+    @RequestMapping(value = "/logout", method = RequestMethod.POST)
+    @ResponseBody
+    public Result logout(
+            @RequestHeader("token") String token) throws Exception {
+        return userService.logout(token);
     }
 
 

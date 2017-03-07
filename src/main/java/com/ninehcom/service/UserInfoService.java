@@ -278,5 +278,18 @@ public class UserInfoService {
         ResSuccess(result);
         return result;
     }
+    /**
+     * 登出
+     */
+    public Result logout(String token) throws JSONException {
+
+        String response = null;
+        try {
+            response = ucAgent.logout(token);
+        } catch (Exception ex) {
+            return Result.Fail(ErrorCode.UserCenterCantConnect, ex);
+        }
+        return Result.getResult(response);
+    }
 
 }
