@@ -8,8 +8,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import sun.misc.BASE64Encoder;
 
 import java.io.Serializable;
+import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -43,7 +47,11 @@ public class UserInfoService {
             String checkCode,
             String appID,
             LogInfo logInfo
-    ) throws JSONException {
+    ) throws JSONException, NoSuchAlgorithmException, UnsupportedEncodingException {
+        //id(生成规则) nickname（）phone  openid  unionid createdAt updatedAt（）
+//        MessageDigest md5 = MessageDigest.getInstance("MD5");
+//        BASE64Encoder base64Encoder = new BASE64Encoder();
+//        String passwordMd5 = base64Encoder.encode(md5.digest(password.getBytes("UTF-8")));
 
         String response = null;
         try {

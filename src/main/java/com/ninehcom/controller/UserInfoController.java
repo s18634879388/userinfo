@@ -114,6 +114,8 @@ public class UserInfoController {
             @PathVariable("mobileNum") String mobileNum,
             @PathVariable("password") String password,
             HttpServletRequest request) throws Exception {
+
+        //token登录何时需要   token的生成规则，何时过期，过期销毁？
         String ip = RequestUtils.getIpAddr(request);
         return userService.login(mobileNum, password, appID,
                 new LogInfo(ip, systemtypeid, equipmentnum));
