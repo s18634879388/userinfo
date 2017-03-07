@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ninehcom.mapper.UserInfoMapper">
+    <resultMap type="com.ninehcom.entity.UserInfo" id="userInfoMap">
+        <id column="Id" property="Id"/>
+        <result column="PhoneNumber" property="PhoneNumber"/>
+        <result column="NickName" property="NickName"/>
+        <result column="Signature" property="Signature"/>
+        <result column="Portrait" property="Portrait"/>
+        <result column="Name" property="Name"/>
+        <result column="Sex" property="Sex"/>
+        <result column="Birthday" property="Birthday"/>
+        <result column="Provinceid" property="Provinceid"/>
+        <result column="Cityid" property="Cityid"/>
+        <result column="Districtid" property="Districtid"/>
+        <result column="Idnum" property="Idnum"/>
+        <result column="Extra" property="Extra"/>
+        <result column="CreatedAt" property="CreatedAt"/>
+        <result column="UpdatedAt" property="UpdatedAt"/>
+        <result column="DeletedAt" property="DeletedAt"/>
+        <result column="RoleId" property="RoleId"/>
+        <result column="ChangeNickNameTimes" property="ChangeNickNameTimes"/>
+        <result column="VIPInfo" property="VIPInfo"/>
+    </resultMap>
+
+
+
+    <insert id="insertUser">
+        INSERT INTO user_info
+        (Id,NickName, CreatedAt, UpdatedAt,ChangeNickNameTimes) 
+        VALUES ( #{0},#{1}, NOW(),NOW(),0);
+    </insert>
+
+    <select id="selectUserInfoById" resultType="com.ninehcom.entity.UserInfo">
+        SELECT
+        *
+        FROM
+        user_info
+        WHERE
+        Id = #{0}
+    </select>
+    <!--<insert id="insertUserInfo" parameterType="com.ninehcom.userinfo.entity.UserInfo">-->
+        <!--INSERT user_info-->
+        <!--(Id, PhoneNumber, NickName, Signature, Portrait, Name, Sex, Birthday, Provinceid, Cityid,Districtid, Idnum, Extra, CreatedAt, UpdatedAt, DeletedAt,ChangeNickNameTimes) -->
+        <!--VALUES -->
+        <!--(#{Id}, #{PhoneNumber}, #{NickName}, #{Signature}, #{Portrait}, #{Name}, #{Sex}, #{Birthday}, #{Provinceid}, #{Cityid},#{Districtid}, #{Idnum}, #{Extra}, NOW(), NOW(), NULL,0)-->
+    <!--</insert>-->
+
+
+</mapper>
+
