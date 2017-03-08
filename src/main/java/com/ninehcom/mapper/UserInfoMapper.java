@@ -13,7 +13,6 @@ import com.ninehcom.entity.UserInfo;
 public interface UserInfoMapper {
 
     UserInfo selectUserInfoById(String Id);
-    int insertUser(String Id, String nickName);
-
-
+    int insertUser(UserInfo userInfo);
+    int updateUserPass(UserInfo userInfo);
 }

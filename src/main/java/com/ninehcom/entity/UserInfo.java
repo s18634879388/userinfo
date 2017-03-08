@@ -15,169 +15,94 @@ import java.util.Date;
  */
 @Entity
 public class UserInfo implements Serializable {
-    
+
     @Id
     private String Id;
+
+    private String NickName;
+
+    private String PhoneNumber;
+
+    private String unionId;
+
+    private String openid;
+
+    private Date CreatedAt;
+
+    private Date UpdatedAt;
+
+    private String token;
+
+    private String password;
+
+    private String headimgurl;
+
+//    private int ChangeNickNameTimes;
+//
+//    private String Signature;
+//
+//    private String Portrait;
+//
+//    private String Name;
+//
+//    private Integer Sex;
+//
+//    private Date Birthday;
+//
+//    private Integer Provinceid;
+//
+//    private Integer Cityid;
+//
+//    private Integer Districtid;
+//
+//    private String Idnum;
+//
+//    private String Extra;
+//
+//    private Integer RoleId;
+//
+//    private String VIPInfo;
+
 
     public String getId() {
         return Id;
     }
 
-    public void setId(String Id) {
-        this.Id = Id;
+    public void setId(String id) {
+        Id = id;
     }
-    
-    private int ChangeNickNameTimes;
-
-    private String PhoneNumber;
-
-    public String getPhoneNumber() {
-        return PhoneNumber;
-    }
-
-    public void setPhoneNumber(String PhoneNumber) {
-        this.PhoneNumber = PhoneNumber;
-    }
-
-    private String NickName;
 
     public String getNickName() {
         return NickName;
     }
 
-    public void setNickName(String NickName) {
-        this.NickName = NickName;
+    public void setNickName(String nickName) {
+        NickName = nickName;
     }
 
-    private String Signature;
-
-    public String getSignature() {
-        return Signature;
+    public String getPhoneNumber() {
+        return PhoneNumber;
     }
 
-    public void setSignature(String Signature) {
-        this.Signature = Signature;
+    public void setPhoneNumber(String phoneNumber) {
+        PhoneNumber = phoneNumber;
     }
 
-    private String Portrait;
-
-    public String getPortrait() {
-        return Portrait;
+    public String getUnionId() {
+        return unionId;
     }
 
-    public void setPortrait(String Portrait) {
-        this.Portrait = Portrait;
+    public void setUnionId(String unionId) {
+        this.unionId = unionId;
     }
 
-    private String Name;
-
-    public String getName() {
-        return Name;
+    public String getOpenid() {
+        return openid;
     }
 
-    public void setName(String Name) {
-        this.Name = Name;
+    public void setOpenid(String openid) {
+        this.openid = openid;
     }
-
-    private Integer Sex;
-
-    public Integer getSex() {
-        return Sex;
-    }
-
-    public void setSex(Integer Sex) {
-        this.Sex = Sex;
-    }
-
-    private Date Birthday;
-
-    public Date getBirthday() {
-        return Birthday;
-    }
-
-    public void setBirthday(Date Birthday) {
-        this.Birthday = Birthday;
-    }
-
-    private Integer Provinceid;
-
-    public Integer getProvinceid() {
-        return Provinceid;
-    }
-
-    public void setProvinceid(Integer Provinceid) {
-        this.Provinceid = Provinceid;
-    }
-
-    private Integer Cityid;
-
-    public Integer getCityid() {
-        return Cityid;
-    }
-
-    public void setCityid(Integer Cityid) {
-        this.Cityid = Cityid;
-    }
-    
-    private Integer Districtid;
-    public  Integer getDistrictid() {
-        return Districtid;
-    }
-    public void setDistrictid(Integer Districtid) {
-        this.Districtid = Districtid;
-    }
-
-    private String Idnum;
-
-    public String getIdnum() {
-        return Idnum;
-    }
-
-    public void setIdnum(String Idnum) {
-        this.Idnum = Idnum;
-    }
-
-    private String Extra;
-
-    public String getExtra() {
-        return Extra;
-    }
-
-    public void setExtra(String Extra) {
-        this.Extra = Extra;
-    }
-    
-    private Integer RoleId;
-
-    /**
-     * @return the RoleId
-     */
-    public Integer getRoleId() {
-        return RoleId;
-    }
-
-    /**
-     * @param RoleId the RoleId to set
-     */
-    public void setRoleId(Integer RoleId) {
-        this.RoleId = RoleId;
-    }
-
-    /**
-     * @return the ChangeNickNameTimes
-     */
-    public int getChangeNickNameTimes() {
-        return ChangeNickNameTimes;
-    }
-
-    /**
-     * @param ChangeNickNameTimes the ChangeNickNameTimes to set
-     */
-    public void setChangeNickNameTimes(int ChangeNickNameTimes) {
-        this.ChangeNickNameTimes = ChangeNickNameTimes;
-    }
-
-    private Date CreatedAt;
 
     public Date getCreatedAt() {
         return CreatedAt;
@@ -187,19 +112,35 @@ public class UserInfo implements Serializable {
         CreatedAt = createdAt;
     }
 
-    private String VIPInfo;
-
-    /**
-     * @return the VIPInfo
-     */
-    public String getVIPInfo() {
-        return VIPInfo;
+    public Date getUpdatedAt() {
+        return UpdatedAt;
     }
 
-    /**
-     * @param VIPInfo the VIPInfo to set
-     */
-    public void setVIPInfo(String VIPInfo) {
-        this.VIPInfo = VIPInfo;
+    public void setUpdatedAt(Date updatedAt) {
+        UpdatedAt = updatedAt;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getHeadimgurl() {
+        return headimgurl;
+    }
+
+    public void setHeadimgurl(String headimgurl) {
+        this.headimgurl = headimgurl;
     }
 }

@@ -21,7 +21,7 @@ public class UCAgent {
     public final static String KEY_USER_ID = "unionuserid";
     public final static String KEY_MOBILE_NUM = "mobilenum";
 
-    private static String userUrl = "https://test-account.9h-sports.com";
+    private static String userUrl = "http://10.10.232.85";
 
     @Autowired
     ConnectAgent agent;
@@ -43,25 +43,29 @@ public class UCAgent {
                 mobilenum, appid);
         // get sms code
 //        return HttpsUtil.getAsString(request, "utf-8");
-        return agent.sendRequestHttpsUTF8(request);
+//        return agent.sendRequestHttpsUTF8(request);
+        return HttpClients.get(request);
     }
 
     public String checkCode(String mobileNum, String checkCode, String appid) throws Exception {
         String request = String.format(userUrl + "/user/validatesmscode?mobilenum=%s&smscode=%s&appid=%s",
                 mobileNum, checkCode, appid);//测试时使用https://test-account.9h-sports.com/user/validatesmscode?mobilenum=&smscode=&appid=  上线时使用https://api-account.9h-sports.com/user/validatesmscode?mobilenum=&smscode=&appid=
-        return agent.sendRequestHttpsUTF8(request);
+//        return agent.sendRequestHttpsUTF8(request);
+        return HttpClients.get(request);
     }
 
     public String validateMobile(String mobileNum) throws Exception {
         String request = String.format(userUrl + "/user/validatemobilenum?mobilenum=%s",
                 mobileNum);
-        return agent.sendRequestHttpsUTF8(request);
+//        return agent.sendRequestHttpsUTF8(request);
+        return HttpClients.get(request);
     }
 
     public String validateToken(String token) throws Exception {
         String request = String.format(userUrl + "/user/validatetoken?token=%s",
                 token);
-        return agent.sendRequestHttpsUTF8(request);
+//        return agent.sendRequestHttpsUTF8(request);
+        return HttpClients.get(request);
     }
 
     public String register(
@@ -76,7 +80,8 @@ public class UCAgent {
                 logInfo.getIp(),
                 logInfo.getSystemtypeid(),
                 logInfo.getEquipmentnum());
-        return agent.sendRequestHttpsUTF8(request);
+        return HttpClients.get(request);
+//        return agent.sendRequestHttpsUTF8(request);
     }
 
     public String login(String mobileNum, String password, String appID, LogInfo logInfo) throws Exception {
@@ -86,13 +91,15 @@ public class UCAgent {
                 logInfo.getSystemtypeid(),
                 logInfo.getEquipmentnum());
 
-        return agent.sendRequestHttpsUTF8(request);
+//        return agent.sendRequestHttpsUTF8(request);
+        return HttpClients.get(request);
     }
 
     public String resetMobile(String token, String mobileNum, String password, String checkCode) throws Exception {
         String request = String.format(userUrl + "/user/resetmobilenum?token=%s&password=%s&mobilenum=%s&smscode=%s",
                 token, password, mobileNum, checkCode);
-        return agent.sendRequestHttpsUTF8(request);
+//        return agent.sendRequestHttpsUTF8(request);
+        return HttpClients.get(request);
     }
 
     public String resetPassword(String mobileNum, String password, String checkCode, String appID, LogInfo logInfo) throws Exception {
@@ -101,28 +108,16 @@ public class UCAgent {
                 logInfo.getIp(),
                 logInfo.getSystemtypeid(),
                 logInfo.getEquipmentnum());
-        return agent.sendRequestHttpsUTF8(request);
+//        return agent.sendRequestHttpsUTF8(request);
+        return HttpClients.get(request);
     }
 
-    public String modifyPassword(String token, String oldpassword, String newpassword) throws Exception {
-        String request = String.format(userUrl + "/user/modifypassword?token=%s&oldpassword=%s&newpassword=%s",
-                token, oldpassword, newpassword);
-        return agent.sendRequestHttpsUTF8(request);
-    }
 
     public String getUserbytoken(String token) throws Exception {
         String request = String.format(userUrl + "/user/getbytoken?token=%s",
                 token);
-        return agent.sendRequestHttpsUTF8(request);
-    }
-
-    public String threePartLogin(String openId, int authorizedtypeid, String appId, LogInfo logInfo) throws Exception {
-        String request = String.format(userUrl + "/user/authorizedlogin?&openid=%s&appid=%s&authorizedtypeid=%s&&ip=%s&systemtypeid=%s&equipmentnum=%s",
-                openId, appId, authorizedtypeid,
-                logInfo.getIp(),
-                logInfo.getSystemtypeid(),
-                logInfo.getEquipmentnum());
-        return agent.sendRequestHttpsUTF8(request);
+//        return agent.sendRequestHttpsUTF8(request);
+        return HttpClients.get(request);
     }
 
     public String threePartLoginv2(String openId, String unionId, int authorizedtypeid, String appId, LogInfo logInfo) throws Exception {
@@ -131,26 +126,19 @@ public class UCAgent {
                 logInfo.getIp(),
                 logInfo.getSystemtypeid(),
                 logInfo.getEquipmentnum());
-        return agent.sendRequestHttpsUTF8(request);
+//        return agent.sendRequestHttpsUTF8(request);
+        return HttpClients.get(request);
     }
 
-    public String binduser(String token, String mobileNum, String password, String checkCode) throws Exception {
-        String request = String.format(userUrl + "/user/binduser?token=%s&mobilenum=%s&smscode=%s&password=%s",
-                token, mobileNum, checkCode, password
-        );
-        return agent.sendRequestHttpsUTF8(request);
-    }
 
-    public String tokenlogin(String token) throws Exception {
-        String request = String.format(userUrl + "/user/tokenlogin?token=%s",
-                token);
-        return agent.sendRequestHttpsUTF8(request);
-    }
+
+
 
     public String logout(String token) throws Exception {
         String request = String.format(userUrl + "/user/logout?token=%s",
                 token);
-        return agent.sendRequestHttpsUTF8(request);
+//        return agent.sendRequestHttpsUTF8(request);
+        return HttpClients.get(request);
     }
 
 }

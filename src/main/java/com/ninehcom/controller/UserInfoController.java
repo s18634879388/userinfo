@@ -1,6 +1,7 @@
 package com.ninehcom.controller;
 
 import com.ninehcom.entity.LogInfo;
+import com.ninehcom.entity.UserInfo;
 import com.ninehcom.service.UserInfoService;
 import com.ninehcom.util.RequestUtils;
 import com.ninehcom.util.Result;
@@ -9,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 
 /**
@@ -18,7 +20,7 @@ import javax.servlet.http.HttpServletRequest;
  */
 @Api(basePath = "/users", value = "发送验证码", description = "验证码", produces = "application/json")
 @RestController
-@RequestMapping(value = "/users")
+@RequestMapping(value = "/users/v1")
 public class UserInfoController {
 
     @Autowired
@@ -27,7 +29,7 @@ public class UserInfoController {
 //    @Autowired
 //    private EditconfigService configService;
 
-    private String appID = "3";
+    private String appID = "8";
 
 //    @PostConstruct
 //    private void init() {
@@ -124,47 +126,24 @@ public class UserInfoController {
     /**
      * 三方登录
      */
-    @ApiOperation(value = "三方登录", notes = "三方登录", position = 11)
+    @ApiOperation(value = "三方登录v2", notes = "三方登录v2", position = 11)
     @ApiResponse(code = 20001, message = "用户数据插入数据库失败")
-    @RequestMapping(value = "/authorizedlogin/{authorizedtypeid}/{openId}", method = RequestMethod.POST)
+    @RequestMapping(value = "/authorizedlogin/v2/{authorizedtypeid}/{openid}/{unionid}/{accesstoken}/{refreshtoken}", method = RequestMethod.POST)
     @ResponseBody
-    public Result threePartLogin(
+    public Result threePartLoginv2(
             @RequestHeader("systemtypeid") String systemtypeid,
             @RequestHeader("equipmentnum") String equipmentnum,
-            @PathVariable("openId") String openId,
-            @PathVariable("authorizedtypeid") int authorizedtypeid,
+            @PathVariable("openid") String openId,
+            @PathVariable("unionid") String unionId,
+            @PathVariable("accesstoken") String accessToken,
+            @PathVariable("refreshtoken") String refreshToken,
+            @PathVariable("authorizedtypeid") int authorizedtypeid,@RequestParam(value = "nickName") String nickName,@RequestParam(value = "headimgurl") String headimgurl,
             HttpServletRequest request) throws Exception {
         String ip = RequestUtils.getIpAddr(request);
-        return userService.threePartLogin(openId, authorizedtypeid, appID,
+        return userService.threePartLoginv2(openId, unionId, accessToken, refreshToken, authorizedtypeid, appID,nickName,headimgurl,
                 new LogInfo(ip, systemtypeid, equipmentnum));
     }
 
-    /**
-     * 绑定新手机号
-     */
-    @ApiOperation(value = "绑定新手机号", notes = "绑定新手机号", position = 12)
-    @RequestMapping(value = "/binduser/{mobileNum}/{password}/{checkCode}", method = RequestMethod.POST)
-    @ResponseBody
-    public Result binduser(
-            @RequestHeader("token") String token,
-            @PathVariable("mobileNum") String mobileNum,
-            @PathVariable("password") String password,
-            @PathVariable("checkCode") String checkCode) throws Exception {
-        return userService.binduser(token, mobileNum, password, checkCode);
-    }
-    /**
-     * 换绑定手机号
-     */
-    @ApiOperation(value = "换绑定手机号", notes = "换绑定手机号", position = 6)
-    @RequestMapping(value = "/resetmobile/{mobileNum}/{password}/{checkCode}", method = RequestMethod.POST)
-    @ResponseBody
-    public Result resetMobile(
-            @RequestHeader("token") String token,
-            @PathVariable("mobileNum") String mobileNum,
-            @PathVariable("password") String password,
-            @PathVariable("checkCode") String checkCode) throws Exception {
-        return userService.resetMobile(token, mobileNum, password, checkCode);
-    }
     /**
      * 检查token
      */
@@ -194,28 +173,7 @@ public class UserInfoController {
         return userService.resetPassword(mobileNum, password, checkCode, appID,
                 new LogInfo(ip, systemtypeid, equipmentnum));
     }
-    /**
-     * 用户修改密码
-     */
-    @ApiOperation(value = "用户修改密码", notes = "用户修改密码", position = 8)
-    @RequestMapping(value = "/modifypassword/{oldpassword}/{newpassword}", method = RequestMethod.POST)
-    @ResponseBody
-    public Result modifyPassword(
-            @RequestHeader("token") String token,
-            @PathVariable("oldpassword") String oldpassword,
-            @PathVariable("newpassword") String newpassword) throws Exception {
-        return userService.modifyPassword(token, oldpassword, newpassword);
-    }
-    /**
-     * token 登录
-     */
-    @ApiOperation(value = "token 登录", notes = "token 登录", position = 13)
-    @RequestMapping(value = "/tokenlogin", method = RequestMethod.POST)
-    @ResponseBody
-    public Result tokenlogin(
-            @RequestHeader("token") String token) throws Exception {
-        return userService.tokenlogin(token);
-    }
+
     /**
      * 登出
      */
@@ -226,6 +184,31 @@ public class UserInfoController {
             @RequestHeader("token") String token) throws Exception {
         return userService.logout(token);
     }
+    /**
+     * 根据token取得用户信息
+     */
+    @ApiOperation(value = "根据token取得用户信息", notes = "根据token取得用户信息", position = 9)
+    @RequestMapping(value = "/getuserbytoken", method = RequestMethod.POST)
+    @ResponseBody
+    public Result getUserbytoken(
+            @RequestHeader("token") String token) throws Exception {
+        return userService.getUserbytoken(token);
+    }
+
+//    @ApiOperation(value = "validate token", notes = "validate token", position = 4)
+//    @ApiResponses(value = {})
+//    @RequestMapping(value = "/validate-token", method = RequestMethod.POST)
+//    @ResponseBody
+//    public UserInfo validateToken(
+//            @ApiParam(value = "token", defaultValue = "ade7d1e2-10ab-4481-867b-2e9b78e2061f")
+//            @RequestHeader("token") String token, HttpServletResponse response) throws Exception {
+//
+//        UserInfo userinfo = userService.getUserInfoByToken(token);
+//        if (userinfo == null) {
+//            response.setStatus(403);
+//        }
+//        return userinfo;
+//    }
 
 
 }

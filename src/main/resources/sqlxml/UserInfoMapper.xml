@@ -4,49 +4,39 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ninehcom.mapper.UserInfoMapper">
     <resultMap type="com.ninehcom.entity.UserInfo" id="userInfoMap">
-        <id column="Id" property="Id"/>
-        <result column="PhoneNumber" property="PhoneNumber"/>
-        <result column="NickName" property="NickName"/>
-        <result column="Signature" property="Signature"/>
-        <result column="Portrait" property="Portrait"/>
-        <result column="Name" property="Name"/>
-        <result column="Sex" property="Sex"/>
-        <result column="Birthday" property="Birthday"/>
-        <result column="Provinceid" property="Provinceid"/>
-        <result column="Cityid" property="Cityid"/>
-        <result column="Districtid" property="Districtid"/>
-        <result column="Idnum" property="Idnum"/>
-        <result column="Extra" property="Extra"/>
-        <result column="CreatedAt" property="CreatedAt"/>
-        <result column="UpdatedAt" property="UpdatedAt"/>
-        <result column="DeletedAt" property="DeletedAt"/>
-        <result column="RoleId" property="RoleId"/>
-        <result column="ChangeNickNameTimes" property="ChangeNickNameTimes"/>
-        <result column="VIPInfo" property="VIPInfo"/>
+        <id column="id" property="Id"/>
+        <result column="union_id" property="unionId"/>
+        <result column="open_id" property="openid"/>
+        <result column="phone_number" property="PhoneNumber"/>
+        <result column="nick_name" property="NickName"/>
+        <result column="head_img_url" property="headimgurl"/>
+        <result column="password" property="password"/>
+        <result column="created_at" property="CreatedAt"/>
+        <result column="updated_at" property="UpdatedAt"/>
+
     </resultMap>
 
 
 
     <insert id="insertUser">
-        INSERT INTO user_info
-        (Id,NickName, CreatedAt, UpdatedAt,ChangeNickNameTimes) 
-        VALUES ( #{0},#{1}, NOW(),NOW(),0);
+        INSERT INTO rm_user
+        (id,union_id, open_id, phone_number,nick_name,head_img_url,password,created_at,updated_at)
+        VALUES ( #{Id},#{unionId}, #{openid},#{PhoneNumber},#{NickName},#{headimgurl},#{password},now(),now());
     </insert>
 
-    <select id="selectUserInfoById" resultType="com.ninehcom.entity.UserInfo">
+    <select id="selectUserInfoById" resultMap="userInfoMap">
         SELECT
         *
         FROM
-        user_info
+        rm_user
         WHERE
-        Id = #{0}
+        id = #{0}
     </select>
-    <!--<insert id="insertUserInfo" parameterType="com.ninehcom.userinfo.entity.UserInfo">-->
-        <!--INSERT user_info-->
-        <!--(Id, PhoneNumber, NickName, Signature, Portrait, Name, Sex, Birthday, Provinceid, Cityid,Districtid, Idnum, Extra, CreatedAt, UpdatedAt, DeletedAt,ChangeNickNameTimes) -->
-        <!--VALUES -->
-        <!--(#{Id}, #{PhoneNumber}, #{NickName}, #{Signature}, #{Portrait}, #{Name}, #{Sex}, #{Birthday}, #{Provinceid}, #{Cityid},#{Districtid}, #{Idnum}, #{Extra}, NOW(), NOW(), NULL,0)-->
-    <!--</insert>-->
+
+    <update id="updateUserPass">
+        UPDATE rm_user set password=#{password} where id=#{Id}
+
+    </update>
 
 
 </mapper>

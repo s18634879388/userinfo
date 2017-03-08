@@ -4,18 +4,25 @@ import com.ninehcom.entity.LogInfo;
 import com.ninehcom.entity.UserInfo;
 import com.ninehcom.mapper.UserInfoMapper;
 import com.ninehcom.util.*;
+import org.apache.commons.httpclient.Header;
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.HttpException;
+import org.apache.commons.httpclient.methods.GetMethod;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import sun.misc.BASE64Encoder;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 import java.util.logging.Logger;
 
 /**
@@ -49,17 +56,12 @@ public class UserInfoService {
             LogInfo logInfo
     ) throws JSONException, NoSuchAlgorithmException, UnsupportedEncodingException {
         //id(生成规则) nickname（）phone  openid  unionid createdAt updatedAt（）
-//        MessageDigest md5 = MessageDigest.getInstance("MD5");
-//        BASE64Encoder base64Encoder = new BASE64Encoder();
-//        String passwordMd5 = base64Encoder.encode(md5.digest(password.getBytes("UTF-8")));
-
         String response = null;
         try {
             response = ucAgent.register(mobileNum, password, checkCode, appID, logInfo);
         } catch (Exception ex) {
             return Result.Fail(ErrorCode.UserCenterCantConnect, ex);
         }
-
         Result result = Result.getResult(response);
         if (result.isSuccess()) {
             String userId = result.getValue(UCAgent.KEY_USER_ID);
@@ -68,31 +70,19 @@ public class UserInfoService {
                 return Result.Fail(ErrorCode.UserIdIsEmpty);
             }
             String nickname = Base62Utils.getNextAccount();
-            int ret = insertUser(userId, nickname);
+            UserInfo userInfo = new UserInfo();
+            userInfo.setId(userId);
+            userInfo.setPassword(Md5Utils.md5(password));
+            userInfo.setNickName(nickname);
+            userInfo.setPhoneNumber(mobileNum);
+            int ret = userInfoMapper.insertUser(userInfo);
             if (ret != 1) {
                 return Result.Fail(ErrorCode.UserInsertDBFail);
             }
-            UserInfo userInfo = new UserInfo();
-            userInfo.setId(userId);
-            userInfo.setNickName(nickname);
-//            try {
-//                boolean flag = searchAgent.updateSearchWord(userInfo);
-//                if (!flag){
-//                    return Result.Fail(ErrorCode.SearchAgentUpdateFail);
-//                }
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
         }
         return result;
     }
 
-    private int insertUser(String userId, String nickName) {
-        int ret = userInfoMapper.insertUser(userId, nickName);
-//        Level level = levelService.getLevel(0);
-//        userStatisticsMapper.insertUserStatistics(userId, level.getId(), level.getTitle());
-        return ret;
-    }
 
     /**
      * 发送验证码
@@ -153,7 +143,6 @@ public class UserInfoService {
      * 已有用户的登录功能
      */
     public Result login(String mobileNum, String password, String appID, LogInfo logInfo) throws JSONException {
-
         String response = null;
         try {
             response = ucAgent.login(mobileNum, password, appID, logInfo);
@@ -161,11 +150,6 @@ public class UserInfoService {
             return Result.Fail(ErrorCode.UserCenterCantConnect, ex);
         }
         Result result = Result.getResult(response);
-        ResSuccess(result);
-
-        return result;
-    }
-    public Result ResSuccess(Result result){
         if (result.isSuccess()) {
             String userId = result.getValue(UCAgent.KEY_USER_ID);
             if (userId == null || userId.isEmpty()) {
@@ -174,13 +158,53 @@ public class UserInfoService {
             UserInfo user = userInfoMapper.selectUserInfoById(userId);
             if (user == null) {
                 String nickname = Base62Utils.getNextAccount();
-                int ret = insertUser(userId, nickname);
+                UserInfo userInfo = new UserInfo();
+                userInfo.setId(userId);
+                userInfo.setNickName(nickname);
+                userInfo.setPhoneNumber(mobileNum);
+                userInfo.setPassword(Md5Utils.md5(password));
+                int ret = userInfoMapper.insertUser(userInfo);
                 if (ret != 1) {
                     return Result.Fail(ErrorCode.UserInsertDBFail);
                 }
+            }else {
+                user.setPassword(Md5Utils.md5(password));
+                userInfoMapper.updateUserPass(user);
+            }
+        }
+        return result;
+
+    }
+
+
+    public Result threePartLoginv2(String openId, String unionId, String accessToken, String refreshToken, int authorizedtypeid,
+                                   String appId,String nickName ,String headimgurl, LogInfo logInfo) throws JSONException, IOException {
+        String response = null;
+        try {
+            response = ucAgent.threePartLoginv2(openId, unionId, authorizedtypeid, appId, logInfo);
+        } catch (Exception ex) {
+            return Result.Fail(ErrorCode.UserCenterCantConnect, ex);
+        }
+        Result result = Result.getResult(response);
+        if (result.isSuccess()) {
+            String userId = result.getValue(UCAgent.KEY_USER_ID);
+            if (userId == null || userId.isEmpty()) {
+                return Result.Fail(ErrorCode.UserIdIsEmpty);
+            }
+            UserInfo user = userInfoMapper.selectUserInfoById(userId);
+            if (user == null) {
                 user = new UserInfo();
-                user.setId(userId);
-                user.setNickName(nickname);
+                user.setNickName(nickName);
+                user.setHeadimgurl(headimgurl);
+                user.setId(UUID.randomUUID().toString());
+                user.setUnionId(unionId);
+                int ret = userInfoMapper.insertUser(user);
+                if (ret != 1) {
+                    return Result.Fail(ErrorCode.UserInsertDBFail);
+                }
+//                user = new UserInfo();
+//                user.setId(userId);
+//                user.setNickName(nickname);
 //                try {
 //                    boolean flag = searchAgent.updateSearchWord(user);
 //                    if (!flag){
@@ -192,48 +216,9 @@ public class UserInfoService {
             }
         }
         return result;
-    }
 
-    /**
-     * 三方登录
-     */
-    public Result threePartLogin(String openId, int authorizedtypeid, String appId, LogInfo logInfo) throws JSONException {
 
-        String response = null;
-        try {
-            response = ucAgent.threePartLogin(openId, authorizedtypeid, appId, logInfo);
-        } catch (Exception ex) {
-            return Result.Fail(ErrorCode.UserCenterCantConnect, ex);
-        }
 
-        Result result = Result.getResult(response);
-        ResSuccess(result);
-        return result;
-    }
-    /**
-     * 绑定新手机号
-     */
-    public Result binduser(String token, String mobileNum, String password, String checkCode) throws JSONException {
-
-        String response = null;
-        try {
-            response = ucAgent.binduser(token, mobileNum, password, checkCode);
-        } catch (Exception ex) {
-            return Result.Fail(ErrorCode.UserCenterCantConnect, ex);
-        }
-        return Result.getResult(response);
-    }
-    /**
-     * 换绑定手机号
-     */
-    public Result resetMobile(String token, String mobileNum, String password, String checkCode) throws JSONException {
-        String response = null;
-        try {
-            response = ucAgent.resetMobile(token, mobileNum, password, checkCode);
-        } catch (Exception ex) {
-            return Result.Fail(ErrorCode.UserCenterCantConnect, ex);
-        }
-        return Result.getResult(response);
     }
     /**
      * 检查token
@@ -259,32 +244,7 @@ public class UserInfoService {
             return Result.Fail(ErrorCode.UserCenterCantConnect, ex);
         }
         return Result.getResult(response);
-    }
-    /**
-     * 用户修改密码
-     */
-    public Result modifyPassword(String token, String oldpassword, String newpassword) throws JSONException {
 
-        String response = null;
-        try {
-            response = ucAgent.modifyPassword(token, oldpassword, newpassword);
-        } catch (Exception ex) {
-            return Result.Fail(ErrorCode.UserCenterCantConnect, ex);
-        }
-        return Result.getResult(response);
-    }
-    public Result tokenlogin(String token) throws JSONException {
-
-        String response = null;
-        try {
-            response = ucAgent.tokenlogin(token);
-        } catch (Exception ex) {
-            return Result.Fail(ErrorCode.UserCenterCantConnect, ex);
-        }
-
-        Result result = Result.getResult(response);
-        ResSuccess(result);
-        return result;
     }
     /**
      * 登出
@@ -298,6 +258,58 @@ public class UserInfoService {
             return Result.Fail(ErrorCode.UserCenterCantConnect, ex);
         }
         return Result.getResult(response);
+    }
+
+    /**
+     * 根据token取得用户信息
+     */
+    public Result getUserbytoken(String token) throws JSONException {
+
+        String response = null;
+        try {
+            response = ucAgent.getUserbytoken(token);
+        } catch (Exception ex) {
+            return Result.Fail(ErrorCode.UserCenterCantConnect, ex);
+        }
+
+        Result result = Result.getResult(response);
+
+        if (result.isSuccess()) {
+            String userId = result.getValue(UCAgent.KEY_USER_ID);
+            String mobileNum = result.getValue(UCAgent.KEY_MOBILE_NUM);
+
+            UserInfo user = userInfoMapper.selectUserInfoById(userId);
+            if (user != null) {
+                user.setPhoneNumber(mobileNum);
+                result.setTag(user);
+            }
+        }
+        return result;
+    }
+
+    public UserInfo getUserInfoByToken(String token) throws JSONException {
+
+        String response = null;
+        try {
+            response = ucAgent.getUserbytoken(token);
+        } catch (Exception ex) {
+            return null;
+        }
+
+        Result result = Result.getResult(response);
+
+        if (result.isSuccess()) {
+            String userId = result.getValue(UCAgent.KEY_USER_ID);
+            String mobileNum = result.getValue(UCAgent.KEY_MOBILE_NUM);
+            UserInfo user = userInfoMapper.selectUserInfoById(userId);
+            if (user != null) {
+                user.setPhoneNumber(mobileNum);
+            }
+            return user;
+
+        } else {
+            return null;
+        }
     }
 
 }
