@@ -3,12 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.ninehcom.util;
+package com.realmadrid.util;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
 import java.net.URLEncoder;
 
 /**
@@ -20,16 +19,6 @@ public class SmsAgent {
 
     private static String smsUrl = "https://test-sms.9h-sports.com";
 
-//    @Autowired
-//    private EditconfigService configService;
-
-    @Autowired
-    ConnectAgent agent;
-
-//    @PostConstruct
-//    private void init() {
-//        smsUrl = configService.getValue(ConfigKeys.SmsUrl);
-//    }
 
     public String snedMessage(String mobilenum, String appid, String contents) throws Exception {
 //        String CheckCodeText = configService.getValue(ConfigKeys.CheckCodeText);
@@ -40,7 +29,7 @@ public class SmsAgent {
                 mobilenum, appid, contents);
         // get sms code
 //        return HttpsUtil.getAsString(request, "utf-8");
-        return agent.sendRequestHttpsUTF8(request);
+        return HttpClients.get(request);
     }
     
     public String snedOriginMessage(String mobilenum, String appid, String contents) throws Exception {
@@ -49,6 +38,6 @@ public class SmsAgent {
                 mobilenum, appid, contents);
         // get sms code
 //        return HttpsUtil.getAsString(request, "utf-8");
-        return agent.sendRequestHttpsUTF8(request);
+        return HttpClients.get(request);
     }
 }

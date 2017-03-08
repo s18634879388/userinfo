@@ -1,16 +1,14 @@
-package com.ninehcom.controller;
+package com.realmadrid.controller;
 
-import com.ninehcom.entity.LogInfo;
-import com.ninehcom.entity.UserInfo;
-import com.ninehcom.service.UserInfoService;
-import com.ninehcom.util.RequestUtils;
-import com.ninehcom.util.Result;
+import com.realmadrid.entity.LogInfo;
+import com.realmadrid.service.UserInfoService;
+import com.realmadrid.util.RequestUtils;
+import com.realmadrid.util.Result;
 import com.wordnik.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 
 /**
@@ -26,15 +24,8 @@ public class UserInfoController {
     @Autowired
     UserInfoService userService;
 
-//    @Autowired
-//    private EditconfigService configService;
-
     private String appID = "8";
 
-//    @PostConstruct
-//    private void init() {
-//        appID = configService.getValue(ConfigKeys.AppID);
-//    }
 
     public UserInfoController() {
 
@@ -195,20 +186,6 @@ public class UserInfoController {
         return userService.getUserbytoken(token);
     }
 
-//    @ApiOperation(value = "validate token", notes = "validate token", position = 4)
-//    @ApiResponses(value = {})
-//    @RequestMapping(value = "/validate-token", method = RequestMethod.POST)
-//    @ResponseBody
-//    public UserInfo validateToken(
-//            @ApiParam(value = "token", defaultValue = "ade7d1e2-10ab-4481-867b-2e9b78e2061f")
-//            @RequestHeader("token") String token, HttpServletResponse response) throws Exception {
-//
-//        UserInfo userinfo = userService.getUserInfoByToken(token);
-//        if (userinfo == null) {
-//            response.setStatus(403);
-//        }
-//        return userinfo;
-//    }
 
 
 }

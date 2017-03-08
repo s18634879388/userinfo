@@ -1,4 +1,4 @@
-package com.ninehcom.conf;
+package com.realmadrid.conf;
 
 import org.springframework.beans.factory.BeanClassLoaderAware;
 import org.springframework.boot.context.properties.ConfigurationProperties;

@@ -1,6 +1,5 @@
-package com.ninehcom.util;
+package com.realmadrid.util;
 
-import com.ninehcom.util.ErrorCode;
 import org.json.JSONException;
 import org.json.JSONObject;
 

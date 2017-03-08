@@ -1,35 +1,21 @@
-package com.ninehcom.service;
+package com.realmadrid.service;
 
-import com.ninehcom.entity.LogInfo;
-import com.ninehcom.entity.UserInfo;
-import com.ninehcom.mapper.UserInfoMapper;
-import com.ninehcom.util.*;
-import org.apache.commons.httpclient.Header;
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpException;
-import org.apache.commons.httpclient.methods.GetMethod;
+import com.realmadrid.entity.LogInfo;
+import com.realmadrid.entity.UserInfo;
+import com.realmadrid.mapper.UserInfoMapper;
+import com.realmadrid.util.*;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import sun.misc.BASE64Encoder;
-
 import java.io.IOException;
-import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
-import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 import java.util.UUID;
 import java.util.logging.Logger;
 
 /**
- * UserUserinfo的Service
  *
- * @author shenjizhe
- * @version 1.0.0
  */
 @Service
 public class UserInfoService {
@@ -287,29 +273,5 @@ public class UserInfoService {
         return result;
     }
 
-    public UserInfo getUserInfoByToken(String token) throws JSONException {
-
-        String response = null;
-        try {
-            response = ucAgent.getUserbytoken(token);
-        } catch (Exception ex) {
-            return null;
-        }
-
-        Result result = Result.getResult(response);
-
-        if (result.isSuccess()) {
-            String userId = result.getValue(UCAgent.KEY_USER_ID);
-            String mobileNum = result.getValue(UCAgent.KEY_MOBILE_NUM);
-            UserInfo user = userInfoMapper.selectUserInfoById(userId);
-            if (user != null) {
-                user.setPhoneNumber(mobileNum);
-            }
-            return user;
-
-        } else {
-            return null;
-        }
-    }
 
 }

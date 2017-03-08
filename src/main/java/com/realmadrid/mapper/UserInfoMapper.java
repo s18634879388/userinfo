@@ -1,14 +1,11 @@
-package com.ninehcom.mapper;
+package com.realmadrid.mapper;
 
 
-import com.ninehcom.entity.UserInfo;
+import com.realmadrid.entity.UserInfo;
 
 
 /**
- * UserUserinfo的Mapper，用于Mybatis
  *
- * @author shenjizhe
- * @version 1.0.0
  */
 public interface UserInfoMapper {
 

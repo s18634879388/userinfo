@@ -1,4 +1,4 @@
-package com.ninehcom.entity;
+package com.realmadrid.entity;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -6,36 +6,29 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
- * UserInfo实体类，将同时用于Mybatis和JPA使用
  *
- * @author shenjizhe
- * @version 1.0.0 Id 唯一标识 PhoneNumber 手机号码 NickName 昵称 Signature 个性签名 Portrait
- * 头像URL Name 姓名 Sex 性别(0:未知 1::男 2:女) Birthday 生日 Provinceid 省编码 Cityid 市编码
- * Idnum 身份证号码 Extra 扩展字段
  */
 @Entity
 public class UserInfo implements Serializable {
 
     @Id
-    private String Id;
+    private String Id;      //唯一id
 
-    private String NickName;
+    private String NickName;    //昵称
 
-    private String PhoneNumber;
+    private String PhoneNumber; //电话
 
-    private String unionId;
+    private String unionId;     //微信unionid
 
-    private String openid;
+    private String openid;      //微信openid
 
-    private Date CreatedAt;
+    private Date CreatedAt;     //创建时间
 
-    private Date UpdatedAt;
+    private Date UpdatedAt;     //更改时间
 
-    private String token;
+    private String password;    //密码
 
-    private String password;
-
-    private String headimgurl;
+    private String headimgurl;  //微信头像url
 
 //    private int ChangeNickNameTimes;
 //
@@ -120,13 +113,6 @@ public class UserInfo implements Serializable {
         UpdatedAt = updatedAt;
     }
 
-    public String getToken() {
-        return token;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
-    }
 
     public String getPassword() {
         return password;

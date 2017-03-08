@@ -1,6 +1,6 @@
-package com.ninehcom.conf;
+package com.realmadrid.conf;
 
-import com.ninehcom.mapper.UserInfoMapper;
+import com.realmadrid.mapper.UserInfoMapper;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.json.JSONArray;
 import org.json.JSONException;

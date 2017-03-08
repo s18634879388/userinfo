@@ -1,4 +1,4 @@
-package com.ninehcom;
+package com.realmadrid;
 
 import org.json.JSONException;
 import org.springframework.boot.CommandLineRunner;
@@ -18,7 +18,7 @@ import java.util.logging.Logger;
  */
 @SpringBootApplication
 @EnableScheduling
-@ComponentScan(basePackages={"com.ninehcom"})
+@ComponentScan(basePackages={"com.realmadrid"})
 public class Application implements CommandLineRunner {
 
     private static final Logger LOG = Logger.getLogger(Application.class.getName());

@@ -1,4 +1,4 @@
-package com.ninehcom.conf;
+package com.realmadrid.conf;
 
 import com.mangofactory.swagger.configuration.SpringSwaggerConfig;
 import com.mangofactory.swagger.models.dto.ApiInfo;

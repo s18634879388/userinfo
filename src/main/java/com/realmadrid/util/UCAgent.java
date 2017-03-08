@@ -3,13 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.ninehcom.util;
+package com.realmadrid.util;
 
-import com.ninehcom.entity.LogInfo;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.realmadrid.entity.LogInfo;
 import org.springframework.stereotype.Component;
-
-import javax.annotation.PostConstruct;
 
 /**
  *
@@ -23,17 +20,6 @@ public class UCAgent {
 
     private static String userUrl = "http://10.10.232.85";
 
-    @Autowired
-    ConnectAgent agent;
-
-//    @Autowired
-//    private EditconfigService configService;
-//
-//    @PostConstruct
-//    private void init() {
-//        userUrl = configService.getValue(ConfigKeys.UserUrl);
-//    }
-
     public UCAgent() {
 
     }
@@ -42,29 +28,24 @@ public class UCAgent {
         String request = String.format(userUrl + "/user/getsmscode?mobilenum=%s&appid=%s",
                 mobilenum, appid);
         // get sms code
-//        return HttpsUtil.getAsString(request, "utf-8");
-//        return agent.sendRequestHttpsUTF8(request);
         return HttpClients.get(request);
     }
 
     public String checkCode(String mobileNum, String checkCode, String appid) throws Exception {
         String request = String.format(userUrl + "/user/validatesmscode?mobilenum=%s&smscode=%s&appid=%s",
                 mobileNum, checkCode, appid);//测试时使用https://test-account.9h-sports.com/user/validatesmscode?mobilenum=&smscode=&appid=  上线时使用https://api-account.9h-sports.com/user/validatesmscode?mobilenum=&smscode=&appid=
-//        return agent.sendRequestHttpsUTF8(request);
         return HttpClients.get(request);
     }
 
     public String validateMobile(String mobileNum) throws Exception {
         String request = String.format(userUrl + "/user/validatemobilenum?mobilenum=%s",
                 mobileNum);
-//        return agent.sendRequestHttpsUTF8(request);
         return HttpClients.get(request);
     }
 
     public String validateToken(String token) throws Exception {
         String request = String.format(userUrl + "/user/validatetoken?token=%s",
                 token);
-//        return agent.sendRequestHttpsUTF8(request);
         return HttpClients.get(request);
     }
 
@@ -81,7 +62,6 @@ public class UCAgent {
                 logInfo.getSystemtypeid(),
                 logInfo.getEquipmentnum());
         return HttpClients.get(request);
-//        return agent.sendRequestHttpsUTF8(request);
     }
 
     public String login(String mobileNum, String password, String appID, LogInfo logInfo) throws Exception {
@@ -91,14 +71,12 @@ public class UCAgent {
                 logInfo.getSystemtypeid(),
                 logInfo.getEquipmentnum());
 
-//        return agent.sendRequestHttpsUTF8(request);
         return HttpClients.get(request);
     }
 
     public String resetMobile(String token, String mobileNum, String password, String checkCode) throws Exception {
         String request = String.format(userUrl + "/user/resetmobilenum?token=%s&password=%s&mobilenum=%s&smscode=%s",
                 token, password, mobileNum, checkCode);
-//        return agent.sendRequestHttpsUTF8(request);
         return HttpClients.get(request);
     }
 
@@ -108,7 +86,6 @@ public class UCAgent {
                 logInfo.getIp(),
                 logInfo.getSystemtypeid(),
                 logInfo.getEquipmentnum());
-//        return agent.sendRequestHttpsUTF8(request);
         return HttpClients.get(request);
     }
 
@@ -116,7 +93,6 @@ public class UCAgent {
     public String getUserbytoken(String token) throws Exception {
         String request = String.format(userUrl + "/user/getbytoken?token=%s",
                 token);
-//        return agent.sendRequestHttpsUTF8(request);
         return HttpClients.get(request);
     }
 
@@ -126,7 +102,6 @@ public class UCAgent {
                 logInfo.getIp(),
                 logInfo.getSystemtypeid(),
                 logInfo.getEquipmentnum());
-//        return agent.sendRequestHttpsUTF8(request);
         return HttpClients.get(request);
     }
 
@@ -137,7 +112,6 @@ public class UCAgent {
     public String logout(String token) throws Exception {
         String request = String.format(userUrl + "/user/logout?token=%s",
                 token);
-//        return agent.sendRequestHttpsUTF8(request);
         return HttpClients.get(request);
     }
 

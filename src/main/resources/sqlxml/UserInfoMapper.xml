@@ -2,8 +2,8 @@
 <!DOCTYPE mapper
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.ninehcom.mapper.UserInfoMapper">
-    <resultMap type="com.ninehcom.entity.UserInfo" id="userInfoMap">
+<mapper namespace="com.realmadrid.mapper.UserInfoMapper">
+    <resultMap type="com.realmadrid.entity.UserInfo" id="userInfoMap">
         <id column="id" property="Id"/>
         <result column="union_id" property="unionId"/>
         <result column="open_id" property="openid"/>
@@ -34,7 +34,7 @@
     </select>
 
     <update id="updateUserPass">
-        UPDATE rm_user set password=#{password} where id=#{Id}
+        UPDATE rm_user set password=#{password},updated_at=now() where id=#{Id}
 
     </update>
 
