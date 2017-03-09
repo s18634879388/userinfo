@@ -75,7 +75,24 @@ public class UserInfoService {
     /**
      * 发送验证码
      */
-    public Result sendCheckCode(String mobilenum, String appid) throws JSONException {
+    public Result sendCheckCode(String mobilenum, String stage,String appid) throws JSONException {
+        String response1 = null;
+        try {
+            response1 = ucAgent.validateMobile(mobilenum);
+            JSONObject jsonObject = new JSONObject(response1);
+            if (jsonObject.getInt("code")!=0){
+                if (stage.equals("register")){
+                    return Result.Fail(ErrorCode.UserHasRegister);
+                }
+            }else {
+                if (stage.equals("reset")){
+                    return Result.Fail(ErrorCode.UserHasNotRegister);
+                }
+            }
+        } catch (Exception e) {
+            return Result.Fail(ErrorCode.UserCenterCantConnect, e);
+        }
+
         String response = null;
         try {
             response = ucAgent.sendCheckCode(mobilenum, appid);
@@ -187,7 +204,7 @@ public class UserInfoService {
                 user = new UserInfo();
                 user.setNickName(nickName);
                 user.setHeadimgurl(headimgurl);
-                user.setId(UUID.randomUUID().toString());
+                user.setId(userId);
                 user.setUnionId(unionId);
                 int ret = userInfoMapper.insertUser(user);
                 if (ret != 1) {

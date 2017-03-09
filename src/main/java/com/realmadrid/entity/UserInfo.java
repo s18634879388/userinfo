@@ -32,6 +32,16 @@ public class UserInfo implements Serializable {
 
     private String salt;
 
+    private String checkCode;
+
+    private String stage;
+
+    private String accesstoken;
+
+    private String refreshtoken;
+
+    private int authorizedtypeid;
+
 //    private int ChangeNickNameTimes;
 //
 //    private String Signature;
@@ -138,5 +148,45 @@ public class UserInfo implements Serializable {
 
     public void setSalt(String salt) {
         this.salt = salt;
+    }
+
+    public String getCheckCode() {
+        return checkCode;
+    }
+
+    public void setCheckCode(String checkCode) {
+        this.checkCode = checkCode;
+    }
+
+    public String getStage() {
+        return stage;
+    }
+
+    public void setStage(String stage) {
+        this.stage = stage;
+    }
+
+    public String getAccesstoken() {
+        return accesstoken;
+    }
+
+    public void setAccesstoken(String accesstoken) {
+        this.accesstoken = accesstoken;
+    }
+
+    public String getRefreshtoken() {
+        return refreshtoken;
+    }
+
+    public void setRefreshtoken(String refreshtoken) {
+        this.refreshtoken = refreshtoken;
+    }
+
+    public int getAuthorizedtypeid() {
+        return authorizedtypeid;
+    }
+
+    public void setAuthorizedtypeid(int authorizedtypeid) {
+        this.authorizedtypeid = authorizedtypeid;
     }
 }
