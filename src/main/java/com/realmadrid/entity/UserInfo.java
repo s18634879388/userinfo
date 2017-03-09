@@ -30,6 +30,8 @@ public class UserInfo implements Serializable {
 
     private String headimgurl;  //微信头像url
 
+    private String salt;
+
 //    private int ChangeNickNameTimes;
 //
 //    private String Signature;
@@ -128,5 +130,13 @@ public class UserInfo implements Serializable {
 
     public void setHeadimgurl(String headimgurl) {
         this.headimgurl = headimgurl;
+    }
+
+    public String getSalt() {
+        return salt;
+    }
+
+    public void setSalt(String salt) {
+        this.salt = salt;
     }
 }

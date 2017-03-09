@@ -165,26 +165,26 @@ public class UserInfoController {
                 new LogInfo(ip, systemtypeid, equipmentnum));
     }
 
-    /**
-     * 登出
-     */
-    @ApiOperation(value = "登出", notes = "登出", position = 14)
-    @RequestMapping(value = "/logout", method = RequestMethod.POST)
-    @ResponseBody
-    public Result logout(
-            @RequestHeader("token") String token) throws Exception {
-        return userService.logout(token);
-    }
-    /**
-     * 根据token取得用户信息
-     */
-    @ApiOperation(value = "根据token取得用户信息", notes = "根据token取得用户信息", position = 9)
-    @RequestMapping(value = "/getuserbytoken", method = RequestMethod.POST)
-    @ResponseBody
-    public Result getUserbytoken(
-            @RequestHeader("token") String token) throws Exception {
-        return userService.getUserbytoken(token);
-    }
+//    /**
+//     * 登出
+//     */
+//    @ApiOperation(value = "登出", notes = "登出", position = 14)
+//    @RequestMapping(value = "/logout", method = RequestMethod.POST)
+//    @ResponseBody
+//    public Result logout(
+//            @RequestHeader("token") String token) throws Exception {
+//        return userService.logout(token);
+//    }
+//    /**
+//     * 根据token取得用户信息
+//     */
+//    @ApiOperation(value = "根据token取得用户信息", notes = "根据token取得用户信息", position = 9)
+//    @RequestMapping(value = "/getuserbytoken", method = RequestMethod.POST)
+//    @ResponseBody
+//    public Result getUserbytoken(
+//            @RequestHeader("token") String token) throws Exception {
+//        return userService.getUserbytoken(token);
+//    }
 
 
 

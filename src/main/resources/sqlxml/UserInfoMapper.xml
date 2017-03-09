@@ -5,14 +5,15 @@
 <mapper namespace="com.realmadrid.mapper.UserInfoMapper">
     <resultMap type="com.realmadrid.entity.UserInfo" id="userInfoMap">
         <id column="id" property="Id"/>
-        <result column="union_id" property="unionId"/>
-        <result column="open_id" property="openid"/>
+        <result column="wx_union_id" property="unionId"/>
+        <result column="wx_open_id" property="openid"/>
         <result column="phone_number" property="PhoneNumber"/>
         <result column="nick_name" property="NickName"/>
         <result column="head_img_url" property="headimgurl"/>
         <result column="password" property="password"/>
         <result column="created_at" property="CreatedAt"/>
         <result column="updated_at" property="UpdatedAt"/>
+        <result column="salt" property="salt"/>
 
     </resultMap>
 
@@ -20,8 +21,8 @@
 
     <insert id="insertUser">
         INSERT INTO rm_user
-        (id,union_id, open_id, phone_number,nick_name,head_img_url,password,created_at,updated_at)
-        VALUES ( #{Id},#{unionId}, #{openid},#{PhoneNumber},#{NickName},#{headimgurl},#{password},now(),now());
+        (id,wx_union_id, wx_open_id, phone_number,nick_name,head_img_url,password,created_at,updated_at,salt)
+        VALUES ( #{Id},#{unionId}, #{openid},#{PhoneNumber},#{NickName},#{headimgurl},#{password},now(),now(),#{salt});
     </insert>
 
     <select id="selectUserInfoById" resultMap="userInfoMap">
@@ -34,7 +35,7 @@
     </select>
 
     <update id="updateUserPass">
-        UPDATE rm_user set password=#{password},updated_at=now() where id=#{Id}
+        UPDATE rm_user set password=#{password},salt=#{salt}, updated_at=now() where id=#{Id}
 
     </update>
 

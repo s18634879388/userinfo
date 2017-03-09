@@ -58,7 +58,9 @@ public class UserInfoService {
             String nickname = Base62Utils.getNextAccount();
             UserInfo userInfo = new UserInfo();
             userInfo.setId(userId);
-            userInfo.setPassword(Md5Utils.md5(password));
+            String salt = Md5Utils.getNextSalt();
+            userInfo.setSalt(salt);
+            userInfo.setPassword(Md5Utils.md5(Md5Utils.md5(password)+salt));
             userInfo.setNickName(nickname);
             userInfo.setPhoneNumber(mobileNum);
             int ret = userInfoMapper.insertUser(userInfo);
@@ -148,12 +150,15 @@ public class UserInfoService {
                 userInfo.setId(userId);
                 userInfo.setNickName(nickname);
                 userInfo.setPhoneNumber(mobileNum);
-                userInfo.setPassword(Md5Utils.md5(password));
+                String salt = Md5Utils.getNextSalt();
+                userInfo.setSalt(salt);
+                userInfo.setPassword(Md5Utils.md5(Md5Utils.md5(password)+salt));
                 int ret = userInfoMapper.insertUser(userInfo);
                 if (ret != 1) {
                     return Result.Fail(ErrorCode.UserInsertDBFail);
                 }
             }else {
+                user.setSalt(password);
                 user.setPassword(Md5Utils.md5(password));
                 userInfoMapper.updateUserPass(user);
             }
