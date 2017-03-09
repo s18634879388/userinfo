@@ -18,7 +18,7 @@ public class UCAgent {
     public final static String KEY_USER_ID = "unionuserid";
     public final static String KEY_MOBILE_NUM = "mobilenum";
 
-    private static String userUrl = "http://10.10.232.85";
+    private static String userUrl = "http://test-account.9h-sports.com";
 
     public UCAgent() {
 

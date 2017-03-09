@@ -17,7 +17,7 @@ import java.net.URLEncoder;
 @Component
 public class SmsAgent {
 
-    private static String smsUrl = "https://test-sms.9h-sports.com";
+    private static String smsUrl = "http://test-sms.9h-sports.com";
 
 
     public String snedMessage(String mobilenum, String appid, String contents) throws Exception {

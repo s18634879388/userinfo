@@ -119,7 +119,7 @@ public class UserInfoController {
      */
     @ApiOperation(value = "三方登录v2", notes = "三方登录v2", position = 11)
     @ApiResponse(code = 20001, message = "用户数据插入数据库失败")
-    @RequestMapping(value = "/authorizedlogin/v2/{authorizedtypeid}/{openid}/{unionid}/{accesstoken}/{refreshtoken}", method = RequestMethod.POST)
+    @RequestMapping(value = "/authorizedlogin/{authorizedtypeid}/{openid}/{unionid}/{accesstoken}/{refreshtoken}", method = RequestMethod.POST)
     @ResponseBody
     public Result threePartLoginv2(
             @RequestHeader("systemtypeid") String systemtypeid,
