@@ -1,6 +1,7 @@
 package com.realmadrid.controller;
 
 import com.realmadrid.entity.LogInfo;
+import com.realmadrid.entity.Message;
 import com.realmadrid.entity.UserInfo;
 import com.realmadrid.service.UserInfoService;
 import com.realmadrid.util.RequestUtils;
@@ -141,12 +142,12 @@ public class UserInfoController {
      * 用户重置密码
      */
     @ApiOperation(value = "用户重置密码(需要步骤4完成)", notes = "用户重置密码(需要步骤4完成)", position = 7)
-    @RequestMapping(value = "/{mobileNum}", method = RequestMethod.PUT)
+    @RequestMapping(value = "/user", method = RequestMethod.PUT)
     @ResponseBody
     public Result resetPassword(
             @RequestHeader("systemtypeid") String systemtypeid,
             @RequestHeader("equipmentnum") String equipmentnum,
-            @PathVariable("mobileNum") String mobileNum,
+            @RequestParam ("mobileNum") String mobileNum,
             @RequestBody UserInfo userInfo,
             HttpServletRequest request) throws Exception {
         String ip = RequestUtils.getIpAddr(request);
@@ -175,6 +176,16 @@ public class UserInfoController {
         return userService.getUserbytoken(token);
     }
 
+    /**
+     * 推送
+     */
+    @ApiOperation(value = "消息推送", notes = "消息推送", position = 14)
+    @RequestMapping(value = "/push", method = RequestMethod.POST)
+    @ResponseBody
+    public Result push(
+            @RequestBody Message message) throws Exception {
 
+        return userService.push(message);
+    }
 
 }

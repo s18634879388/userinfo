@@ -1,8 +1,15 @@
 package com.realmadrid.service;
 
 import com.realmadrid.entity.LogInfo;
+import com.realmadrid.entity.Message;
 import com.realmadrid.entity.UserInfo;
 import com.realmadrid.mapper.UserInfoMapper;
+import com.realmadrid.message.AndroidNotification;
+import com.realmadrid.message.PushClient;
+import com.realmadrid.message.android.AndroidBroadcast;
+import com.realmadrid.message.android.AndroidUnicast;
+import com.realmadrid.message.ios.IOSBroadcast;
+import com.realmadrid.message.ios.IOSUnicast;
 import com.realmadrid.util.*;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -30,6 +37,8 @@ public class UserInfoService {
 
     @Autowired
     private SmsAgent smsAgent;
+
+    private PushClient client = new PushClient();
 
     /**
      * 新用户的注册功能
@@ -293,6 +302,83 @@ public class UserInfoService {
             }
         }
         return result;
+    }
+
+
+    public Result push(Message message) throws Exception {
+        //123.59.84.71  消息推送  device token     登录记录    token取信息返回格式    加队列
+        if ("union_cast".equals(message.getType())){
+            AndroidUnicast unicast = new AndroidUnicast(message.getAppKey(),"cvez4r8js0xwbghysn7l8kfbrosygtfz");
+            // TODO Set your device token
+            unicast.setDeviceToken( "Aj218wKYETsQdjuqV3454pvhuAFRG1i0o0s5nDRi92cj");
+            unicast.setTicker( "Android unicast ticker");
+            unicast.setTitle(  "中文的title");
+            unicast.setText(   "Android unicast text");
+            unicast.goAppAfterOpen();
+            unicast.setDisplayType(AndroidNotification.DisplayType.NOTIFICATION);
+            // For how to register a test device, please see the developer doc.
+            unicast.setProductionMode();
+            // Set customized fields
+            unicast.setExtraField("test", "helloworld");
+            client.send(unicast);
+        }
+        return null;
+    }
+
+    public void sendAndroidBroadcast() throws Exception {
+        AndroidBroadcast broadcast = new AndroidBroadcast("","");
+        broadcast.setTicker( "Android broadcast ticker");
+        broadcast.setTitle(  "中文的title");
+        broadcast.setText(   "Android broadcast text");
+        broadcast.goAppAfterOpen();
+        broadcast.setDisplayType(AndroidNotification.DisplayType.NOTIFICATION);
+        // TODO Set 'production_mode' to 'false' if it's a test device.
+        // For how to register a test device, please see the developer doc.
+        broadcast.setProductionMode();
+        // Set customized fields
+        broadcast.setExtraField("test", "helloworld");
+        client.send(broadcast);
+    }
+    public void sendAndroidUnicast() throws Exception {
+        AndroidUnicast unicast = new AndroidUnicast("","");
+        // TODO Set your device token
+        unicast.setDeviceToken( "your device token");
+        unicast.setTicker( "Android unicast ticker");
+        unicast.setTitle(  "中文的title");
+        unicast.setText(   "Android unicast text");
+        unicast.goAppAfterOpen();
+        unicast.setDisplayType(AndroidNotification.DisplayType.NOTIFICATION);
+        // TODO Set 'production_mode' to 'false' if it's a test device.
+        // For how to register a test device, please see the developer doc.
+        unicast.setProductionMode();
+        // Set customized fields
+        unicast.setExtraField("test", "helloworld");
+        client.send(unicast);
+    }
+    public void sendIOSUnicast() throws Exception {
+        IOSUnicast unicast = new IOSUnicast("","");
+        // TODO Set your device token
+        unicast.setDeviceToken( "xx");
+        unicast.setAlert("IOS 单播测试");
+        unicast.setBadge( 0);
+        unicast.setSound( "default");
+        // TODO set 'production_mode' to 'true' if your app is under production mode
+        unicast.setTestMode();
+        // Set customized fields
+        unicast.setCustomizedField("test", "helloworld");
+        client.send(unicast);
+    }
+    public void sendIOSBroadcast() throws Exception {
+        IOSBroadcast broadcast = new IOSBroadcast("","");
+
+        broadcast.setAlert("IOS 广播测试");
+        broadcast.setBadge( 0);
+        broadcast.setSound( "default");
+        // TODO set 'production_mode' to 'true' if your app is under production mode
+        broadcast.setTestMode();
+        // Set customized fields
+        broadcast.setCustomizedField("test", "helloworld");
+        client.send(broadcast);
     }
 
 
