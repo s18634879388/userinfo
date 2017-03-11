@@ -14,6 +14,8 @@
         <result column="created_at" property="CreatedAt"/>
         <result column="updated_at" property="UpdatedAt"/>
         <result column="salt" property="salt"/>
+        <result column="accessToken" property="accessToken"/>
+        <result column="refreshToken" property="refreshToken"/>
 
     </resultMap>
 
@@ -21,8 +23,8 @@
 
     <insert id="insertUser">
         INSERT INTO rm_user
-        (id,wx_union_id, wx_open_id, phone_number,nick_name,head_img_url,password,created_at,updated_at,salt)
-        VALUES ( #{Id},#{unionId}, #{openid},#{PhoneNumber},#{NickName},#{headimgurl},#{password},now(),now(),#{salt});
+        (id,wx_union_id, wx_open_id, phone_number,nick_name,head_img_url,password,created_at,updated_at,salt,accessToken,refreshToken)
+        VALUES ( #{Id},#{unionId}, #{openid},#{PhoneNumber},#{NickName},#{headimgurl},#{password},now(),now(),#{salt},#{accessToken},#{refreshToken});
     </insert>
 
     <select id="selectUserInfoById" resultMap="userInfoMap">

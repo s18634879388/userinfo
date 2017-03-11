@@ -3,6 +3,7 @@ package com.realmadrid.service;
 import com.realmadrid.entity.LogInfo;
 import com.realmadrid.entity.Message;
 import com.realmadrid.entity.UserInfo;
+import com.realmadrid.mapper.LogInfoMapper;
 import com.realmadrid.mapper.UserInfoMapper;
 import com.realmadrid.message.AndroidNotification;
 import com.realmadrid.message.PushClient;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
+import java.util.HashMap;
 import java.util.UUID;
 import java.util.logging.Logger;
 
@@ -37,6 +39,9 @@ public class UserInfoService {
 
     @Autowired
     private SmsAgent smsAgent;
+
+    @Autowired
+    LogInfoMapper logInfoMapper;
 
     private PushClient client = new PushClient();
 
@@ -69,13 +74,16 @@ public class UserInfoService {
             userInfo.setId(userId);
             String salt = Md5Utils.getNextSalt();
             userInfo.setSalt(salt);
-            userInfo.setPassword(Md5Utils.md5(Md5Utils.md5(password)+salt));
+            userInfo.setPassword(Md5Utils.md5(password+salt));
             userInfo.setNickName(nickname);
             userInfo.setPhoneNumber(mobileNum);
             int ret = userInfoMapper.insertUser(userInfo);
             if (ret != 1) {
                 return Result.Fail(ErrorCode.UserInsertDBFail);
             }
+            logInfo.setUserId(userId);
+            logInfoMapper.addLogInfo(logInfo);
+
         }
         return result;
     }
@@ -178,7 +186,7 @@ public class UserInfoService {
                 userInfo.setPhoneNumber(mobileNum);
                 String salt = Md5Utils.getNextSalt();
                 userInfo.setSalt(salt);
-                userInfo.setPassword(Md5Utils.md5(Md5Utils.md5(password)+salt));
+                userInfo.setPassword(Md5Utils.md5(password+salt));
                 int ret = userInfoMapper.insertUser(userInfo);
                 if (ret != 1) {
                     return Result.Fail(ErrorCode.UserInsertDBFail);
@@ -188,6 +196,8 @@ public class UserInfoService {
                 user.setPassword(Md5Utils.md5(password));
                 userInfoMapper.updateUserPass(user);
             }
+            logInfo.setUserId(userId);
+            logInfoMapper.addLogInfo(logInfo);
         }
         return result;
 
@@ -215,22 +225,15 @@ public class UserInfoService {
                 user.setHeadimgurl(headimgurl);
                 user.setId(userId);
                 user.setUnionId(unionId);
+                user.setAccesstoken(accessToken);
+                user.setRefreshtoken(refreshToken);
                 int ret = userInfoMapper.insertUser(user);
                 if (ret != 1) {
                     return Result.Fail(ErrorCode.UserInsertDBFail);
                 }
-//                user = new UserInfo();
-//                user.setId(userId);
-//                user.setNickName(nickname);
-//                try {
-//                    boolean flag = searchAgent.updateSearchWord(user);
-//                    if (!flag){
-//                        return Result.Fail(ErrorCode.SearchAgentUpdateFail);
-//                    }
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                }
             }
+            logInfo.setUserId(userId);
+            logInfoMapper.addLogInfo(logInfo);
         }
         return result;
 
@@ -251,7 +254,7 @@ public class UserInfoService {
         return Result.getResult(response);
     }
     /**
-     * 用户重置密码
+     * 用户重置密码----------查看接口是否返回userid
      */
     public Result resetPassword(String mobileNum, String password, String checkCode, String appID, LogInfo logInfo) throws JSONException {
         String response = null;
@@ -259,6 +262,15 @@ public class UserInfoService {
             response = ucAgent.resetPassword(mobileNum, password, checkCode, appID, logInfo);
         } catch (Exception ex) {
             return Result.Fail(ErrorCode.UserCenterCantConnect, ex);
+        }
+        Result result = Result.getResult(response);
+        if (result.isSuccess()) {
+            String userId = result.getValue(UCAgent.KEY_USER_ID);
+            if (userId == null || userId.isEmpty()) {
+                return Result.Fail(ErrorCode.UserIdIsEmpty);
+            }
+            logInfo.setUserId(userId);
+            logInfoMapper.addLogInfo(logInfo);
         }
         return Result.getResult(response);
 
@@ -297,6 +309,19 @@ public class UserInfoService {
 
             UserInfo user = userInfoMapper.selectUserInfoById(userId);
             if (user != null) {
+                HashMap<String,String> map = new HashMap<>();
+                map.put("user_id",userId);
+                map.put("union_id",user.getUnionId());
+                map.put("open_id",user.getOpenid());
+                map.put("access_token",user.getAccesstoken());
+                map.put("refresh_token",user.getRefreshtoken());
+                //登录类型
+                map.put("user_type","");
+                map.put("phone_number",mobileNum);
+                map.put("nick_name",user.getNickName());
+                map.put("avatar",user.getHeadimgurl());
+
+
                 user.setPhoneNumber(mobileNum);
                 result.setTag(user);
             }

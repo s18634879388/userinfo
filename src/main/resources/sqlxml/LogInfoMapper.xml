@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.realmadrid.mapper.LogInfoMapper">
+    <resultMap type="com.realmadrid.entity.LogInfo" id="logInfoMap">
+        <id column="id" property="id"/>
+        <result column="os_type" property="systemtypeid"/>
+        <result column="device_id" property="equipmentnum"/>
+        <result column="user_id" property="userId"/>
+        <result column="actived_at" property="activedAt"/>
+
+    </resultMap>
+
+
+    <insert id="addLogInfo">
+        insert into rm_user_device(os_type,device_id,user_id,actived_at) VALUES (#{systemtypeid},#{equipmentnum},#{userId},now())
+
+    </insert>
+
+
+</mapper>
+

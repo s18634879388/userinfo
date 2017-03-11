@@ -1,5 +1,6 @@
 package com.realmadrid.conf;
 
+import com.realmadrid.mapper.LogInfoMapper;
 import com.realmadrid.mapper.UserInfoMapper;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.json.JSONArray;
@@ -36,6 +37,11 @@ public class MyBatisConfiguration {
     @Bean
     public UserInfoMapper userInfoMapper() {
         return sessionTemplate.getMapper(UserInfoMapper.class);
+    }
+
+    @Bean
+    public LogInfoMapper logInfoMapper(){
+        return sessionTemplate.getMapper(LogInfoMapper.class);
     }
 
 
