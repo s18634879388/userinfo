@@ -332,6 +332,12 @@ public class UserInfoService {
 
     public Result push(Message message) throws Exception {
         //123.59.84.71  消息推送  device token     登录记录    token取信息返回格式    加队列
+        
+
+
+
+
+
         if ("union_cast".equals(message.getType())){
             AndroidUnicast unicast = new AndroidUnicast(message.getAppKey(),"cvez4r8js0xwbghysn7l8kfbrosygtfz");
             // TODO Set your device token
@@ -405,6 +411,6 @@ public class UserInfoService {
         broadcast.setCustomizedField("test", "helloworld");
         client.send(broadcast);
     }
-
+// 文档内容更新 根据token取信息返回格式       密码一次md5后传入服务器
 
 }
