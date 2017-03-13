@@ -426,8 +426,9 @@ public class UserInfoService {
                 ) {
             broadcast.setExtraField(key, extra.get(key));
         }
-//        broadcast.setProductionMode();
-        broadcast.setTestMode();
+        broadcast.setExtraField("sender","");
+        broadcast.setProductionMode();
+//        broadcast.setTestMode();
         client.send(broadcast);
     }
     public void sendAndroidListcast(Message message,String androidTokens) throws Exception {
@@ -448,8 +449,9 @@ public class UserInfoService {
                 ) {
             listCast.setExtraField(key, extra.get(key));
         }
-//        unicast.setProductionMode();
-        listCast.setTestMode();
+        listCast.setExtraField("sender",message.getSender());
+        listCast.setProductionMode();
+//        listCast.setTestMode();
         client.send(listCast);
     }
     public void sendAndroidUnicast(Message message) throws Exception {
@@ -476,8 +478,9 @@ public class UserInfoService {
              ) {
             unicast.setExtraField(key, extra.get(key));
         }
-//        unicast.setProductionMode();
-        unicast.setTestMode();
+        unicast.setExtraField("sender",message.getSender());
+        unicast.setProductionMode();
+//        unicast.setTestMode();
         client.send(unicast);
     }
     public void sendIOSUnicast(Message message) throws Exception {
@@ -503,8 +506,9 @@ public class UserInfoService {
         }
         // TODO set 'production_mode' to 'true' if your app is under production mode
         // Set customized fields
-        unicast.setTestMode();
-//        unicast.setProductionMode();
+//        unicast.setTestMode();
+        unicast.setCustomizedField("sender",message.getSender());
+        unicast.setProductionMode();
         client.send(unicast);
     }
     public void sendIOSListCast(Message message,String iosTokens) throws Exception {
@@ -526,8 +530,9 @@ public class UserInfoService {
         // TODO set 'production_mode' to 'true' if your app is under production mode
         // Set customized fields
 //        unicast.setCustomizedField("test", "helloworld");
-        listCast.setTestMode();
-//        unicast.setProductionMode();
+//        listCast.setTestMode();
+        listCast.setCustomizedField("sender",message.getSender());
+        listCast.setProductionMode();
         client.send(listCast);
     }
     public void sendIOSBroadcast(Message message) throws Exception {
@@ -545,8 +550,9 @@ public class UserInfoService {
             broadcast.setCustomizedField(key, extra.get(key));
         }
         // TODO set 'production_mode' to 'true' if your app is under production mode
-        broadcast.setTestMode();
-//        broadcast.setProductionMode();
+//        broadcast.setTestMode();
+        broadcast.setCustomizedField("sender","");
+        broadcast.setProductionMode();
         // Set customized fields
         client.send(broadcast);
     }
