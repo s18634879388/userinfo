@@ -24,7 +24,7 @@ public enum ErrorCode {
     //    SMIntevalFail(10004, "60秒后后可再次对此手机号发送短信"),
     // 用户接口错误码
     UserInsertDBFail(20001, "用户数据插入数据库失败"),
-    UserHasRegister(62000,"用户已注册,请前往登录"),
+    UserHasRegister(62000,"用户已在平台注册或手机号格式错误"),
     UserHasNotRegister(62001,"用户尚未注册,请前往注册"),
     UserUpdateDBFail(20002, "用户数据更新数据库失败"),
     VersionTypeNotExistFail(20004, "当前类型不存在"),

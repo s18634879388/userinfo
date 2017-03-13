@@ -8,8 +8,10 @@ import com.realmadrid.mapper.UserInfoMapper;
 import com.realmadrid.message.AndroidNotification;
 import com.realmadrid.message.PushClient;
 import com.realmadrid.message.android.AndroidBroadcast;
+import com.realmadrid.message.android.AndroidListcast;
 import com.realmadrid.message.android.AndroidUnicast;
 import com.realmadrid.message.ios.IOSBroadcast;
+import com.realmadrid.message.ios.IOSListcast;
 import com.realmadrid.message.ios.IOSUnicast;
 import com.realmadrid.util.*;
 import org.json.JSONException;
@@ -20,6 +22,8 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import java.util.logging.Logger;
 
@@ -44,6 +48,10 @@ public class UserInfoService {
     LogInfoMapper logInfoMapper;
 
     private PushClient client = new PushClient();
+
+    private static String appKey = "58c21df88f4a9d3aec000855";
+
+    private static String appMasterSecret = "ktfyoiftechey1jzspbk2q0bpj41jmfc";
 
     /**
      * 新用户的注册功能
@@ -99,7 +107,8 @@ public class UserInfoService {
             JSONObject jsonObject = new JSONObject(response1);
             if (jsonObject.getInt("code")!=0){
                 if (stage.equals("register")){
-                    return Result.Fail(ErrorCode.UserHasRegister);
+//                    return Result.Fail(ErrorCode.UserHasRegister);
+                    return Result.getResult(response1);
                 }
             }else {
                 if (stage.equals("reset")){
@@ -178,6 +187,7 @@ public class UserInfoService {
                 return Result.Fail(ErrorCode.UserIdIsEmpty);
             }
             UserInfo user = userInfoMapper.selectUserInfoById(userId);
+            LogInfo logInfo1 = logInfoMapper.selectLogInfoByUser(userId);
             if (user == null) {
                 String nickname = Base62Utils.getNextAccount();
                 UserInfo userInfo = new UserInfo();
@@ -196,8 +206,15 @@ public class UserInfoService {
                 user.setPassword(Md5Utils.md5(password));
                 userInfoMapper.updateUserPass(user);
             }
-            logInfo.setUserId(userId);
-            logInfoMapper.addLogInfo(logInfo);
+            if (logInfo1==null){
+                logInfo.setUserId(userId);
+                logInfoMapper.addLogInfo(logInfo);
+            }else {
+                logInfo1.setSystemtypeid(logInfo.getSystemtypeid());
+                logInfo1.setEquipmentnum(logInfo.getEquipmentnum());
+                logInfo.setIp(logInfo.getIp());
+                logInfoMapper.updateLogInfo(logInfo1);
+            }
         }
         return result;
 
@@ -219,6 +236,7 @@ public class UserInfoService {
                 return Result.Fail(ErrorCode.UserIdIsEmpty);
             }
             UserInfo user = userInfoMapper.selectUserInfoById(userId);
+            LogInfo logInfo1 = logInfoMapper.selectLogInfoByUser(userId);
             if (user == null) {
                 user = new UserInfo();
                 user.setNickName(nickName);
@@ -232,8 +250,15 @@ public class UserInfoService {
                     return Result.Fail(ErrorCode.UserInsertDBFail);
                 }
             }
-            logInfo.setUserId(userId);
-            logInfoMapper.addLogInfo(logInfo);
+            if (logInfo1==null){
+                logInfo.setUserId(userId);
+                logInfoMapper.addLogInfo(logInfo);
+            }else {
+                logInfo1.setSystemtypeid(logInfo.getSystemtypeid());
+                logInfo1.setEquipmentnum(logInfo.getEquipmentnum());
+                logInfo.setIp(logInfo.getIp());
+                logInfoMapper.updateLogInfo(logInfo1);
+            }
         }
         return result;
 
@@ -263,15 +288,23 @@ public class UserInfoService {
         } catch (Exception ex) {
             return Result.Fail(ErrorCode.UserCenterCantConnect, ex);
         }
-        Result result = Result.getResult(response);
-        if (result.isSuccess()) {
-            String userId = result.getValue(UCAgent.KEY_USER_ID);
-            if (userId == null || userId.isEmpty()) {
-                return Result.Fail(ErrorCode.UserIdIsEmpty);
-            }
-            logInfo.setUserId(userId);
-            logInfoMapper.addLogInfo(logInfo);
-        }
+//        Result result = Result.getResult(response);
+//        if (result.isSuccess()) {
+//            String userId = result.getValue(UCAgent.KEY_USER_ID);
+//            if (userId == null || userId.isEmpty()) {
+//                return Result.Fail(ErrorCode.UserIdIsEmpty);
+//            }
+//            LogInfo logInfo1 = logInfoMapper.selectLogInfoByUser(userId);
+//            if (logInfo1==null){
+//                logInfo.setUserId(userId);
+//                logInfoMapper.addLogInfo(logInfo);
+//            }else {
+//                logInfo1.setSystemtypeid(logInfo.getSystemtypeid());
+//                logInfo1.setEquipmentnum(logInfo.getEquipmentnum());
+//                logInfo.setIp(logInfo.getIp());
+//                logInfoMapper.updateLogInfo(logInfo1);
+//            }
+//        }
         return Result.getResult(response);
 
     }
@@ -308,6 +341,7 @@ public class UserInfoService {
             String mobileNum = result.getValue(UCAgent.KEY_MOBILE_NUM);
 
             UserInfo user = userInfoMapper.selectUserInfoById(userId);
+            LogInfo logInfo1 = logInfoMapper.selectLogInfoByUser(userId);
             if (user != null) {
                 HashMap<String,String> map = new HashMap<>();
                 map.put("user_id",userId);
@@ -315,15 +349,17 @@ public class UserInfoService {
                 map.put("open_id",user.getOpenid());
                 map.put("access_token",user.getAccesstoken());
                 map.put("refresh_token",user.getRefreshtoken());
-                //登录类型
                 map.put("user_type","");
+                //登录类型
+                if (logInfo1!=null){
+                    map.put("user_type",logInfo1.getSystemtypeid());
+                }
                 map.put("phone_number",mobileNum);
                 map.put("nick_name",user.getNickName());
                 map.put("avatar",user.getHeadimgurl());
 
 
-                user.setPhoneNumber(mobileNum);
-                result.setTag(user);
+                result.setTag(map);
             }
         }
         return result;
@@ -332,83 +368,186 @@ public class UserInfoService {
 
     public Result push(Message message) throws Exception {
         //123.59.84.71  消息推送  device token     登录记录    token取信息返回格式    加队列
-        
-
-
-
-
-
         if ("union_cast".equals(message.getType())){
-            AndroidUnicast unicast = new AndroidUnicast(message.getAppKey(),"cvez4r8js0xwbghysn7l8kfbrosygtfz");
-            // TODO Set your device token
-            unicast.setDeviceToken( "Aj218wKYETsQdjuqV3454pvhuAFRG1i0o0s5nDRi92cj");
-            unicast.setTicker( "Android unicast ticker");
-            unicast.setTitle(  "中文的title");
-            unicast.setText(   "Android unicast text");
-            unicast.goAppAfterOpen();
-            unicast.setDisplayType(AndroidNotification.DisplayType.NOTIFICATION);
-            // For how to register a test device, please see the developer doc.
-            unicast.setProductionMode();
-            // Set customized fields
-            unicast.setExtraField("test", "helloworld");
-            client.send(unicast);
+            if ((message.getReceives().get(0).length())>44){
+                sendIOSUnicast(message);
+            }else {
+                sendAndroidUnicast(message);
+            }
+        }else if ("listcast".equals(message.getType())){
+            List<String> userIds = message.getReceives();
+            String androidTokens = "";
+            String iosTokens = "";
+            for (String userid:userIds
+                 ) {
+                LogInfo logInfo = logInfoMapper.selectLogInfoByUser(userid);
+                if(logInfo!=null){
+                    if (logInfo.getEquipmentnum().length()>44){
+                        iosTokens = iosTokens+logInfo.getEquipmentnum()+",";
+                    }else {
+                        androidTokens = androidTokens+logInfo.getEquipmentnum()+",";
+                    }
+                }
+            }
+
+            if (androidTokens.endsWith(",")){
+                androidTokens = androidTokens.substring(0,androidTokens.length()-1);
+            }
+            if (iosTokens.endsWith(",")){
+                iosTokens = iosTokens.substring(0,iosTokens.length()-1);
+            }
+            if (androidTokens.length()>0){
+                sendAndroidListcast(message,androidTokens);
+            }
+            if (iosTokens.length()>0){
+                sendIOSListCast(message,iosTokens);
+            }
+        }else if("broadcast".equals(message.getType())){
+            sendAndroidBroadcast(message);
+            sendIOSBroadcast(message);
         }
+
         return null;
     }
 
-    public void sendAndroidBroadcast() throws Exception {
-        AndroidBroadcast broadcast = new AndroidBroadcast("","");
-        broadcast.setTicker( "Android broadcast ticker");
-        broadcast.setTitle(  "中文的title");
-        broadcast.setText(   "Android broadcast text");
+    public void sendAndroidBroadcast(Message message) throws Exception {
+        AndroidBroadcast broadcast = new AndroidBroadcast(appKey,appMasterSecret);
+        broadcast.setTicker(message.getTicker());
+        broadcast.setTitle(message.getTitle());
+        broadcast.setText(message.getText());
         broadcast.goAppAfterOpen();
         broadcast.setDisplayType(AndroidNotification.DisplayType.NOTIFICATION);
         // TODO Set 'production_mode' to 'false' if it's a test device.
         // For how to register a test device, please see the developer doc.
-        broadcast.setProductionMode();
         // Set customized fields
-        broadcast.setExtraField("test", "helloworld");
+        HashMap<String,String> extra = message.getExtra();
+        Set<String> set = extra.keySet();
+        for (String key:set
+                ) {
+            broadcast.setExtraField(key, extra.get(key));
+        }
+//        broadcast.setProductionMode();
+        broadcast.setTestMode();
         client.send(broadcast);
     }
-    public void sendAndroidUnicast() throws Exception {
-        AndroidUnicast unicast = new AndroidUnicast("","");
+    public void sendAndroidListcast(Message message,String androidTokens) throws Exception {
+        AndroidListcast listCast = new AndroidListcast(appKey,appMasterSecret);
         // TODO Set your device token
-        unicast.setDeviceToken( "your device token");
-        unicast.setTicker( "Android unicast ticker");
-        unicast.setTitle(  "中文的title");
-        unicast.setText(   "Android unicast text");
+        listCast.setDeviceToken(androidTokens);
+        listCast.setTicker(message.getTicker());
+        listCast.setTitle(message.getTitle());
+        listCast.setText(message.getText());
+        listCast.goAppAfterOpen();
+        listCast.setDisplayType(AndroidNotification.DisplayType.NOTIFICATION);
+        // TODO Set 'production_mode' to 'false' if it's a test device.
+        // For how to register a test device, please see the developer doc.
+        // Set customized fields
+        HashMap<String,String> extra = message.getExtra();
+        Set<String> set = extra.keySet();
+        for (String key:set
+                ) {
+            listCast.setExtraField(key, extra.get(key));
+        }
+//        unicast.setProductionMode();
+        listCast.setTestMode();
+        client.send(listCast);
+    }
+    public void sendAndroidUnicast(Message message) throws Exception {
+        AndroidUnicast unicast = new AndroidUnicast(appKey,appMasterSecret);
+        // TODO Set your device token
+        LogInfo logInfo = logInfoMapper.selectLogInfoByUser(message.getReceives().get(0));
+        if (logInfo==null){
+            LOG.info("不存在的设备信息");
+            return;
+        }
+
+        unicast.setDeviceToken(logInfo.getEquipmentnum());
+        unicast.setTicker(message.getTicker());
+        unicast.setTitle(message.getTitle());
+        unicast.setText(message.getText());
         unicast.goAppAfterOpen();
         unicast.setDisplayType(AndroidNotification.DisplayType.NOTIFICATION);
         // TODO Set 'production_mode' to 'false' if it's a test device.
         // For how to register a test device, please see the developer doc.
-        unicast.setProductionMode();
         // Set customized fields
-        unicast.setExtraField("test", "helloworld");
-        client.send(unicast);
-    }
-    public void sendIOSUnicast() throws Exception {
-        IOSUnicast unicast = new IOSUnicast("","");
-        // TODO Set your device token
-        unicast.setDeviceToken( "xx");
-        unicast.setAlert("IOS 单播测试");
-        unicast.setBadge( 0);
-        unicast.setSound( "default");
-        // TODO set 'production_mode' to 'true' if your app is under production mode
+        HashMap<String,String> extra = message.getExtra();
+        Set<String> set = extra.keySet();
+        for (String key:set
+             ) {
+            unicast.setExtraField(key, extra.get(key));
+        }
+//        unicast.setProductionMode();
         unicast.setTestMode();
-        // Set customized fields
-        unicast.setCustomizedField("test", "helloworld");
         client.send(unicast);
     }
-    public void sendIOSBroadcast() throws Exception {
-        IOSBroadcast broadcast = new IOSBroadcast("","");
-
-        broadcast.setAlert("IOS 广播测试");
-        broadcast.setBadge( 0);
-        broadcast.setSound( "default");
+    public void sendIOSUnicast(Message message) throws Exception {
+        IOSUnicast unicast = new IOSUnicast(appKey,appMasterSecret);
+        // TODO Set your device token
+        LogInfo logInfo = logInfoMapper.selectLogInfoByUser(message.getReceives().get(0));
+        if (logInfo==null){
+            LOG.info("不存在的设备信息");
+            return;
+        }
+        unicast.setDeviceToken(logInfo.getEquipmentnum());
+        HashMap<String,String > map = new HashMap<>();
+        map.put("body",message.getText());
+        map.put("title",message.getTitle());
+        unicast.setAlert(map.toString());
+//        unicast.setBadge(0);
+        unicast.setSound("default");
+        HashMap<String,String> extra = message.getExtra();
+        Set<String> set = extra.keySet();
+        for (String key:set
+                ) {
+            unicast.setCustomizedField(key, extra.get(key));
+        }
+        // TODO set 'production_mode' to 'true' if your app is under production mode
+        // Set customized fields
+        unicast.setTestMode();
+//        unicast.setProductionMode();
+        client.send(unicast);
+    }
+    public void sendIOSListCast(Message message,String iosTokens) throws Exception {
+        IOSListcast listCast = new IOSListcast(appKey,appMasterSecret);
+        // TODO Set your device token
+        listCast.setDeviceToken(iosTokens);
+        HashMap<String,String > map = new HashMap<>();
+        map.put("body",message.getText());
+        map.put("title",message.getTitle());
+        listCast.setAlert(map.toString());
+//        unicast.setBadge(0);
+        listCast.setSound("default");
+        HashMap<String,String> extra = message.getExtra();
+        Set<String> set = extra.keySet();
+        for (String key:set
+                ) {
+            listCast.setCustomizedField(key, extra.get(key));
+        }
+        // TODO set 'production_mode' to 'true' if your app is under production mode
+        // Set customized fields
+//        unicast.setCustomizedField("test", "helloworld");
+        listCast.setTestMode();
+//        unicast.setProductionMode();
+        client.send(listCast);
+    }
+    public void sendIOSBroadcast(Message message) throws Exception {
+        IOSBroadcast broadcast = new IOSBroadcast(appKey,appMasterSecret);
+        HashMap<String,String > map = new HashMap<>();
+        map.put("body",message.getText());
+        map.put("title",message.getTitle());
+        broadcast.setAlert(map.toString());
+//        broadcast.setBadge( 0);
+        broadcast.setSound("default");
+        HashMap<String,String> extra = message.getExtra();
+        Set<String> set = extra.keySet();
+        for (String key:set
+                ) {
+            broadcast.setCustomizedField(key, extra.get(key));
+        }
         // TODO set 'production_mode' to 'true' if your app is under production mode
         broadcast.setTestMode();
+//        broadcast.setProductionMode();
         // Set customized fields
-        broadcast.setCustomizedField("test", "helloworld");
         client.send(broadcast);
     }
 // 文档内容更新 根据token取信息返回格式       密码一次md5后传入服务器

@@ -8,4 +8,8 @@ import com.realmadrid.entity.LogInfo;
 public interface LogInfoMapper {
 
     int addLogInfo(LogInfo logInfo);
+
+    LogInfo selectLogInfoByUser(String userId);
+
+    int updateLogInfo(LogInfo logInfo1);
 }

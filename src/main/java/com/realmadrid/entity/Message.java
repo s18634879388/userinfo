@@ -9,8 +9,6 @@ import java.util.List;
  */
 //@Entity
 public class Message {
-    private String appKey = "55d57c8b67e58e13a0002a00";
-    private String device_tokens = "Aj218wKYETsQdjuqV3454pvhuAFRG1i0o0s5nDRi92cj";
     private String sender;
     private String type;
     private List<String> receives;
@@ -75,19 +73,5 @@ public class Message {
         this.extra = extra;
     }
 
-    public String getAppKey() {
-        return appKey;
-    }
 
-    public void setAppKey(String appKey) {
-        this.appKey = appKey;
-    }
-
-    public String getDevice_tokens() {
-        return device_tokens;
-    }
-
-    public void setDevice_tokens(String device_tokens) {
-        this.device_tokens = device_tokens;
-    }
 }

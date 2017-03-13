@@ -17,6 +17,14 @@
         insert into rm_user_device(os_type,device_id,user_id,actived_at) VALUES (#{systemtypeid},#{equipmentnum},#{userId},now())
 
     </insert>
+    <select id="selectLogInfoByUser" resultMap="logInfoMap">
+        select * from rm_user_device WHERE user_id=#{0}
+
+    </select>
+    <update id="updateLogInfo">
+        update rm_user_device set os_type=#{systemtypeid},device_id=#{equipmentnum},actived_at=now() WHERE user_id=#{userId}
+
+    </update>
 
 
 </mapper>
