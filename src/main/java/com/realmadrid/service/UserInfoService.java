@@ -212,7 +212,7 @@ public class UserInfoService {
             }else {
                 logInfo1.setSystemtypeid(logInfo.getSystemtypeid());
                 logInfo1.setEquipmentnum(logInfo.getEquipmentnum());
-                logInfo.setIp(logInfo.getIp());
+                logInfo1.setIp(logInfo.getIp());
                 logInfoMapper.updateLogInfo(logInfo1);
             }
         }
@@ -256,7 +256,7 @@ public class UserInfoService {
             }else {
                 logInfo1.setSystemtypeid(logInfo.getSystemtypeid());
                 logInfo1.setEquipmentnum(logInfo.getEquipmentnum());
-                logInfo.setIp(logInfo.getIp());
+                logInfo1.setIp(logInfo.getIp());
                 logInfoMapper.updateLogInfo(logInfo1);
             }
         }
@@ -273,6 +273,7 @@ public class UserInfoService {
         String response = null;
         try {
             response = ucAgent.validateToken(token);
+            LOG.info("token--------------"+token);
         } catch (Exception ex) {
             return Result.Fail(ErrorCode.UserCenterCantConnect, ex);
         }
@@ -369,9 +370,10 @@ public class UserInfoService {
     public Result push(Message message) throws Exception {
         //123.59.84.71  消息推送  device token     登录记录    token取信息返回格式    加队列
         if ("union_cast".equals(message.getType())){
-            if ((message.getReceives().get(0).length())>44){
+            LogInfo logInfo1 = logInfoMapper.selectLogInfoByUser(message.getReceives().get(0));
+            if ("2".equals(logInfo1.getSystemtypeid())){
                 sendIOSUnicast(message);
-            }else {
+            }else if ("1".equals(logInfo1.getSystemtypeid())){
                 sendAndroidUnicast(message);
             }
         }else if ("listcast".equals(message.getType())){
