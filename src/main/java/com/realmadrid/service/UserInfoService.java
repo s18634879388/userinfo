@@ -49,9 +49,15 @@ public class UserInfoService {
 
     private PushClient client = new PushClient();
 
-    private static String appKey = "58c21df88f4a9d3aec000855";
+//    private static String appKey = "58c21df88f4a9d3aec000855";
+//    private static String appMasterSecret = "ktfyoiftechey1jzspbk2q0bpj41jmfc";
 
-    private static String appMasterSecret = "ktfyoiftechey1jzspbk2q0bpj41jmfc";
+    private static String appKey = "58c8a175310c9367b7000e33";
+    private static String appMasterSecret = "dxqxbqpzxjyta3lt3dx142frdo8skhph";
+
+    private static String iosAppKey = "";
+
+    private static String iosAppMasterSecret = "";
 
     /**
      * 新用户的注册功能
@@ -202,8 +208,9 @@ public class UserInfoService {
                     return Result.Fail(ErrorCode.UserInsertDBFail);
                 }
             }else {
-                user.setSalt(password);
-                user.setPassword(Md5Utils.md5(password));
+                String salt = Md5Utils.getNextSalt();
+                user.setSalt(salt);
+                user.setPassword(Md5Utils.md5(password+salt));
                 userInfoMapper.updateUserPass(user);
             }
             if (logInfo1==null){
@@ -289,23 +296,24 @@ public class UserInfoService {
         } catch (Exception ex) {
             return Result.Fail(ErrorCode.UserCenterCantConnect, ex);
         }
-//        Result result = Result.getResult(response);
-//        if (result.isSuccess()) {
-//            String userId = result.getValue(UCAgent.KEY_USER_ID);
-//            if (userId == null || userId.isEmpty()) {
-//                return Result.Fail(ErrorCode.UserIdIsEmpty);
-//            }
-//            LogInfo logInfo1 = logInfoMapper.selectLogInfoByUser(userId);
-//            if (logInfo1==null){
-//                logInfo.setUserId(userId);
-//                logInfoMapper.addLogInfo(logInfo);
-//            }else {
-//                logInfo1.setSystemtypeid(logInfo.getSystemtypeid());
-//                logInfo1.setEquipmentnum(logInfo.getEquipmentnum());
-//                logInfo.setIp(logInfo.getIp());
-//                logInfoMapper.updateLogInfo(logInfo1);
-//            }
-//        }
+        Result result = Result.getResult(response);
+        if (result.isSuccess()) {
+            UserInfo userInfo = userInfoMapper.selectUserInfoByPhone(mobileNum);
+            if (userInfo == null) {
+                return Result.Fail(ErrorCode.UserIdIsEmpty);
+            }
+            String userId = userInfo.getId();
+            LogInfo logInfo1 = logInfoMapper.selectLogInfoByUser(userId);
+            if (logInfo1==null){
+                logInfo.setUserId(userId);
+                logInfoMapper.addLogInfo(logInfo);
+            }else {
+                logInfo1.setSystemtypeid(logInfo.getSystemtypeid());
+                logInfo1.setEquipmentnum(logInfo.getEquipmentnum());
+                logInfo1.setIp(logInfo.getIp());
+                logInfoMapper.updateLogInfo(logInfo1);
+            }
+        }
         return Result.getResult(response);
 
     }
@@ -486,7 +494,7 @@ public class UserInfoService {
         client.send(unicast);
     }
     public void sendIOSUnicast(Message message) throws Exception {
-        IOSUnicast unicast = new IOSUnicast(appKey,appMasterSecret);
+        IOSUnicast unicast = new IOSUnicast(iosAppKey,iosAppMasterSecret);
         // TODO Set your device token
         LogInfo logInfo = logInfoMapper.selectLogInfoByUser(message.getReceives().get(0));
         if (logInfo==null){
@@ -508,13 +516,13 @@ public class UserInfoService {
         }
         // TODO set 'production_mode' to 'true' if your app is under production mode
         // Set customized fields
-//        unicast.setTestMode();
         unicast.setCustomizedField("sender",message.getSender());
-        unicast.setProductionMode();
+        unicast.setTestMode();
+//        unicast.setProductionMode();
         client.send(unicast);
     }
     public void sendIOSListCast(Message message,String iosTokens) throws Exception {
-        IOSListcast listCast = new IOSListcast(appKey,appMasterSecret);
+        IOSListcast listCast = new IOSListcast(iosAppKey,iosAppMasterSecret);
         // TODO Set your device token
         listCast.setDeviceToken(iosTokens);
         HashMap<String,String > map = new HashMap<>();
@@ -532,13 +540,13 @@ public class UserInfoService {
         // TODO set 'production_mode' to 'true' if your app is under production mode
         // Set customized fields
 //        unicast.setCustomizedField("test", "helloworld");
-//        listCast.setTestMode();
         listCast.setCustomizedField("sender",message.getSender());
-        listCast.setProductionMode();
+        listCast.setTestMode();
+//        listCast.setProductionMode();
         client.send(listCast);
     }
     public void sendIOSBroadcast(Message message) throws Exception {
-        IOSBroadcast broadcast = new IOSBroadcast(appKey,appMasterSecret);
+        IOSBroadcast broadcast = new IOSBroadcast(iosAppKey,iosAppMasterSecret);
         HashMap<String,String > map = new HashMap<>();
         map.put("body",message.getText());
         map.put("title",message.getTitle());
@@ -552,10 +560,12 @@ public class UserInfoService {
             broadcast.setCustomizedField(key, extra.get(key));
         }
         // TODO set 'production_mode' to 'true' if your app is under production mode
-//        broadcast.setTestMode();
         broadcast.setCustomizedField("sender","");
-        broadcast.setProductionMode();
+        broadcast.setTestMode();
+//        broadcast.setProductionMode();
         // Set customized fields
+        String body = broadcast.getPostBody();
+        LOG.info("body-----"+body);
         client.send(broadcast);
     }
 // 文档内容更新 根据token取信息返回格式       密码一次md5后传入服务器

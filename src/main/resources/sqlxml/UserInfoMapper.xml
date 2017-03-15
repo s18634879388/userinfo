@@ -41,6 +41,11 @@
 
     </update>
 
+    <select id="selectUserInfoByPhone" resultMap="userInfoMap">
+        SELECT * FROM rm_user WHERE phone_number = #{0}
+
+    </select>
+
 
 </mapper>
 

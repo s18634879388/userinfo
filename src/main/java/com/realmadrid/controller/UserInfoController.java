@@ -92,7 +92,7 @@ public class UserInfoController {
     }
 
     /**
-     * 国安俱乐部用户中心启动 用户登录
+     * 皇马用户中心启动 用户登录
      */
     @ApiOperation(value = "应用账号登录(手机号)", notes = "应用账号登录(手机号)", position = 5)
     @ApiResponse(code = 20001, message = "用户数据插入数据库失败")
