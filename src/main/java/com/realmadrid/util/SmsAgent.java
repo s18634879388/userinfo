@@ -6,6 +6,7 @@
 package com.realmadrid.util;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.net.URLEncoder;
@@ -17,7 +18,9 @@ import java.net.URLEncoder;
 @Component
 public class SmsAgent {
 
-    private static String smsUrl = "http://test-sms.9h-sports.com";
+//    private static String smsUrl = "http://test-sms.9h-sports.com";
+    @Value("${smsUrl}")
+    private  String smsUrl;
 
 
     public String snedMessage(String mobilenum, String appid, String contents) throws Exception {

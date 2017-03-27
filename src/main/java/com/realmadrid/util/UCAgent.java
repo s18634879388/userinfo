@@ -6,6 +6,7 @@
 package com.realmadrid.util;
 
 import com.realmadrid.entity.LogInfo;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 /**
@@ -18,7 +19,9 @@ public class UCAgent {
     public final static String KEY_USER_ID = "unionuserid";
     public final static String KEY_MOBILE_NUM = "mobilenum";
 
-    private static String userUrl = "http://test-account.9h-sports.com";
+//    private static String userUrl = "http://test-account.9h-sports.com";
+    @Value("${userUrl}")
+    private  String userUrl;
 
     public UCAgent() {
 
