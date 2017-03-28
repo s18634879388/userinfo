@@ -8,9 +8,13 @@ import com.realmadrid.util.RequestUtils;
 import com.realmadrid.util.Result;
 import com.wordnik.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.actuate.health.Health;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.View;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Map;
 
 
 /**
@@ -186,6 +190,13 @@ public class UserInfoController {
             @RequestBody Message message) throws Exception {
 
         return userService.push(message);
+    }
+    @ApiOperation(value = "监控健康状态", notes = "监控健康状态", position = 9)
+    @RequestMapping(value = "/AppHealth.html", method = RequestMethod.GET)
+    @ResponseBody
+    public ModelAndView getHealth() {
+        ModelAndView modelAndView = new ModelAndView("forward:/health");
+        return modelAndView;
     }
 
 }
