@@ -296,24 +296,25 @@ public class UserInfoService {
         } catch (Exception ex) {
             return Result.Fail(ErrorCode.UserCenterCantConnect, ex);
         }
-        Result result = Result.getResult(response);
-        if (result.isSuccess()) {
-            UserInfo userInfo = userInfoMapper.selectUserInfoByPhone(mobileNum);
-            if (userInfo == null) {
-                return Result.Fail(ErrorCode.UserIdIsEmpty);
-            }
-            String userId = userInfo.getId();
-            LogInfo logInfo1 = logInfoMapper.selectLogInfoByUser(userId);
-            if (logInfo1==null){
-                logInfo.setUserId(userId);
-                logInfoMapper.addLogInfo(logInfo);
-            }else {
-                logInfo1.setSystemtypeid(logInfo.getSystemtypeid());
-                logInfo1.setEquipmentnum(logInfo.getEquipmentnum());
-                logInfo1.setIp(logInfo.getIp());
-                logInfoMapper.updateLogInfo(logInfo1);
-            }
-        }
+        //若在其他平台注册过，找回密码时查询本地数据库无信息，故不记录登录设备信息
+//        Result result = Result.getResult(response);
+//        if (result.isSuccess()) {
+//            UserInfo userInfo = userInfoMapper.selectUserInfoByPhone(mobileNum);
+//            if (userInfo == null) {
+//                return Result.Fail(ErrorCode.UserIdIsEmpty);
+//            }
+//            String userId = userInfo.getId();
+//            LogInfo logInfo1 = logInfoMapper.selectLogInfoByUser(userId);
+//            if (logInfo1==null){
+//                logInfo.setUserId(userId);
+//                logInfoMapper.addLogInfo(logInfo);
+//            }else {
+//                logInfo1.setSystemtypeid(logInfo.getSystemtypeid());
+//                logInfo1.setEquipmentnum(logInfo.getEquipmentnum());
+//                logInfo1.setIp(logInfo.getIp());
+//                logInfoMapper.updateLogInfo(logInfo1);
+//            }
+//        }
         return Result.getResult(response);
 
     }
