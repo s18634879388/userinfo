@@ -25,7 +25,7 @@ public class SmsAgent {
 
     public String snedMessage(String mobilenum, String appid, String contents) throws Exception {
 //        String CheckCodeText = configService.getValue(ConfigKeys.CheckCodeText);
-        String CheckCodeText =  "【皇马中国】您的验证码是：%s，有效期为30分钟。";
+        String CheckCodeText =  "皇家马德里-您的验证码是：%s，有效期为30分钟。";
         contents = CheckCodeText.replace("%s", contents);
         contents = URLEncoder.encode(contents, "utf-8");
         String request = String.format(smsUrl + "/smsservice/send?mobilenum=%s&appid=%s&contents=%s",
