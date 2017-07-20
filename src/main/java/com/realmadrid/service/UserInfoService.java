@@ -160,8 +160,11 @@ public class UserInfoService {
         } catch (Exception ex) {
             return Result.Fail(ErrorCode.UserCenterCantConnect, ex);
         }
-
-        return Result.getResult(response);
+        Result result = Result.getResult(response);
+        if (result.getErrCode()==1002){
+            result.setMessage("验证码输入错误,请重新输入");
+        }
+        return result;
     }
     /**
      * 检查手机号是否可用
@@ -222,6 +225,9 @@ public class UserInfoService {
                 logInfo1.setIp(logInfo.getIp());
                 logInfoMapper.updateLogInfo(logInfo1);
             }
+        }
+        if (result.getErrCode()==102){
+            result.setMessage("手机号输入错误,请重新输入");
         }
         return result;
 
