@@ -161,9 +161,9 @@ public class UserInfoService {
             return Result.Fail(ErrorCode.UserCenterCantConnect, ex);
         }
         Result result = Result.getResult(response);
-        if (result.getErrCode()==1002||result.getErrCode()==114||result.getErrCode()==113){
-            result.setMessage("验证码输入错误,请重新输入");
-        }
+//        if (result.getErrCode()==1002||result.getErrCode()==114||result.getErrCode()==113){
+//            result.setMessage("验证码输入错误,请重新输入");
+//        }
         return result;
     }
     /**
@@ -226,9 +226,9 @@ public class UserInfoService {
                 logInfoMapper.updateLogInfo(logInfo1);
             }
         }
-        if (result.getErrCode()==102){
-            result.setMessage("手机号输入错误,请重新输入");
-        }
+//        if (result.getErrCode()==102){
+//            result.setMessage("手机号输入错误,请重新输入");
+//        }
         return result;
 
     }
