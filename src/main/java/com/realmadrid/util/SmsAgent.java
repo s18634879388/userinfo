@@ -28,7 +28,7 @@ public class SmsAgent {
         String CheckCodeText =  "皇家马德里-您的验证码是：%s，有效期为30分钟。";
         contents = CheckCodeText.replace("%s", contents);
         contents = URLEncoder.encode(contents, "utf-8");
-        String request = String.format(smsUrl + "/smsservice/send?mobilenum=%s&appid=%s&contents=%s",
+        String request = NinehStringUtils.format(smsUrl + "/smsservice/send?mobilenum=%s&appid=%s&contents=%s",
                 mobilenum, appid, contents);
         // get sms code
 //        return HttpsUtil.getAsString(request, "utf-8");
@@ -37,7 +37,7 @@ public class SmsAgent {
     
     public String snedOriginMessage(String mobilenum, String appid, String contents) throws Exception {
         contents = URLEncoder.encode(contents, "utf-8");
-        String request = String.format(smsUrl + "/smsservice/send?mobilenum=%s&appid=%s&contents=%s",
+        String request = NinehStringUtils.format(smsUrl + "/smsservice/send?mobilenum=%s&appid=%s&contents=%s",
                 mobilenum, appid, contents);
         // get sms code
 //        return HttpsUtil.getAsString(request, "utf-8");
