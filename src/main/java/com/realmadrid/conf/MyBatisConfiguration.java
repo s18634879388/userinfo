@@ -1,6 +1,7 @@
 package com.realmadrid.conf;
 
 import com.realmadrid.mapper.LogInfoMapper;
+import com.realmadrid.mapper.MysqlTestTaskMapper;
 import com.realmadrid.mapper.UserInfoMapper;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.json.JSONArray;
@@ -44,7 +45,8 @@ public class MyBatisConfiguration {
         return sessionTemplate.getMapper(LogInfoMapper.class);
     }
 
-
+    @Bean
+    public MysqlTestTaskMapper mysqlTestTaskMapper(){return sessionTemplate.getMapper(MysqlTestTaskMapper.class);}
 
 
 
